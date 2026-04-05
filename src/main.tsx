@@ -30,6 +30,10 @@ import "./i18n";
 import { useModelStore } from "./stores/modelStore";
 useModelStore.getState().initialize();
 
+// Initialize theme store (applies saved theme)
+import { useThemeStore } from "./stores/themeStore";
+useThemeStore.getState().initialize();
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <ErrorBoundary>

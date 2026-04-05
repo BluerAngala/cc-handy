@@ -1,14 +1,27 @@
 @import "tailwindcss";
+@import "./styles/themes.css";
 
 @theme {
-  /* Design tokens */
-  --color-text: #0f0f0f;
-  --color-background: #fbfbfb;
-  --color-background-ui: #da5893;
-  --color-logo-primary: #faa2ca;
-  --color-logo-stroke: #382731;
-  --color-text-stroke: #f6f6f6;
-  --color-mid-gray: #808080;
+  /* Design tokens - mapped to theme variables */
+  --color-text: var(--color-text-primary);
+  --color-background: var(--color-bg-primary);
+  --color-background-ui: var(--color-interactive-primary);
+  --color-logo-primary: var(--color-accent-purple);
+  --color-logo-stroke: var(--color-text-primary);
+  --color-text-stroke: var(--color-bg-secondary);
+  --color-mid-gray: var(--color-text-secondary);
+
+  /* Extended color palette */
+  --color-primary-50: var(--color-primary-50);
+  --color-primary-100: var(--color-primary-100);
+  --color-primary-200: var(--color-primary-200);
+  --color-primary-300: var(--color-primary-300);
+  --color-primary-400: var(--color-primary-400);
+  --color-primary-500: var(--color-primary-500);
+  --color-primary-600: var(--color-primary-600);
+  --color-primary-700: var(--color-primary-700);
+  --color-primary-800: var(--color-primary-800);
+  --color-primary-900: var(--color-primary-900);
 }
 
 :root {
@@ -17,13 +30,6 @@
   line-height: 24px;
   font-weight: 400;
 
-  /* Colors - Light Theme */
-  /* --color-text: #0f0f0f;
-  --color-background: #fbfbfb;
-  --color-logo-primary: #FAA2CA;
-  --color-logo-stroke: #382731;
-  --color-text-stroke: #f6f6f6; */
-
   /* Typography settings */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -31,16 +37,17 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --scrollbar-thumb: color-mix(in srgb, var(--color-text), transparent 85%);
+  /* Scrollbar colors */
+  --scrollbar-thumb: color-mix(in srgb, var(--color-text-primary), transparent 85%);
   --scrollbar-thumb-hover: color-mix(
     in srgb,
-    var(--color-text),
+    var(--color-text-primary),
     transparent 70%
   );
 
   /* Apply colors */
-  color: var(--color-text);
-  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
 }
 
 .container {
@@ -50,16 +57,6 @@
   flex-direction: column;
   justify-content: center;
   text-align: center;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Colors - Dark Theme */
-    --color-text: #fbfbfb;
-    --color-background: #2c2b29;
-    --color-logo-primary: #f28cbb;
-    --color-logo-stroke: #fad1ed;
-  }
 }
 
 /* macOS - tint native overlay scrollbar thumb */
@@ -95,6 +92,18 @@
   .text-stroke {
     -webkit-text-stroke: 2px var(--color-text-stroke);
   }
+
+  /* Gradient utilities */
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--color-accent-gradient-start), var(--color-accent-gradient-end));
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-accent-gradient-start), var(--color-accent-gradient-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 .logo-primary {
@@ -105,4 +114,92 @@
   fill: var(--color-logo-stroke);
   stroke: var(--color-logo-stroke);
   stroke-width: 1;
+}
+
+/* Status indicator colors */
+.status-recording {
+  color: var(--color-status-recording);
+}
+
+.status-processing {
+  color: var(--color-status-processing);
+}
+
+.status-success {
+  color: var(--color-status-success);
+}
+
+.status-idle {
+  color: var(--color-status-idle);
+}
+
+/* Interactive element styles */
+.btn-primary {
+  background-color: var(--color-interactive-primary);
+  color: var(--color-text-inverse);
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-interactive-primary-hover);
+}
+
+.btn-primary:active {
+  background-color: var(--color-interactive-primary-active);
+}
+
+.btn-secondary {
+  background-color: var(--color-interactive-secondary);
+  color: var(--color-text-primary);
+  transition: background-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-interactive-secondary-hover);
+}
+
+.btn-secondary:active {
+  background-color: var(--color-interactive-secondary-active);
+}
+
+/* Card styles */
+.card {
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-primary);
+  border-radius: 12px;
+}
+
+.card-hover:hover {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-border-focus), transparent 80%);
+}
+
+/* Input styles */
+.input {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-primary);
+  color: var(--color-text-primary);
+}
+
+.input:focus {
+  border-color: var(--color-border-focus);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-border-focus), transparent 80%);
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+/* Recording overlay specific */
+.recording-overlay {
+  background: var(--color-bg-overlay);
+}
+
+.recording-indicator {
+  background: var(--color-status-recording);
+}
+
+.processing-indicator {
+  background: var(--color-status-processing);
 }

@@ -1,0 +1,330 @@
+/* ============================================
+   Handy Theme System
+   统一管理软件配色方案，支持多主题切换
+   ============================================ */
+
+/* ------------------------------------------
+   Base Theme Variables (Default)
+   ------------------------------------------ */
+@theme {
+  /* Primary Brand Colors - 蓝紫渐变 */
+  --color-primary-50: #f5f3ff;
+  --color-primary-100: #ede9fe;
+  --color-primary-200: #ddd6fe;
+  --color-primary-300: #c4b5fd;
+  --color-primary-400: #a78bfa;
+  --color-primary-500: #8b5cf6;
+  --color-primary-600: #7c3aed;
+  --color-primary-700: #6d28d9;
+  --color-primary-800: #5b21b6;
+  --color-primary-900: #4c1d95;
+
+  /* Secondary Accent - 蓝紫渐变补充 */
+  --color-secondary-50: #eff6ff;
+  --color-secondary-100: #dbeafe;
+  --color-secondary-200: #bfdbfe;
+  --color-secondary-300: #93c5fd;
+  --color-secondary-400: #60a5fa;
+  --color-secondary-500: #3b82f6;
+  --color-secondary-600: #2563eb;
+  --color-secondary-700: #1d4ed8;
+  --color-secondary-800: #1e40af;
+  --color-secondary-900: #1e3a8a;
+
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Neutral Grays */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+}
+
+/* ------------------------------------------
+   Light Theme (Default)
+   ------------------------------------------ */
+:root[data-theme="light"],
+:root:not([data-theme]) {
+  /* Background Colors */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  --color-bg-tertiary: #f1f5f9;
+  --color-bg-elevated: #ffffff;
+  --color-bg-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Text Colors */
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94a3b8;
+  --color-text-inverse: #ffffff;
+
+  /* Border Colors */
+  --color-border-primary: #e2e8f0;
+  --color-border-secondary: #cbd5e1;
+  --color-border-focus: #8b5cf6;
+
+  /* Interactive Colors */
+  --color-interactive-primary: #8b5cf6;
+  --color-interactive-primary-hover: #7c3aed;
+  --color-interactive-primary-active: #6d28d9;
+  --color-interactive-secondary: #f1f5f9;
+  --color-interactive-secondary-hover: #e2e8f0;
+  --color-interactive-secondary-active: #cbd5e1;
+
+  /* Accent Colors */
+  --color-accent-purple: #8b5cf6;
+  --color-accent-blue: #3b82f6;
+  --color-accent-gradient-start: #8b5cf6;
+  --color-accent-gradient-end: #3b82f6;
+
+  /* Status Colors */
+  --color-status-recording: #ef4444;
+  --color-status-processing: #8b5cf6;
+  --color-status-success: #10b981;
+  --color-status-idle: #94a3b8;
+
+  /* Legacy compatibility */
+  --color-text: var(--color-text-primary);
+  --color-background: var(--color-bg-primary);
+  --color-logo-primary: var(--color-accent-purple);
+  --color-logo-stroke: var(--color-text-primary);
+  --color-text-stroke: var(--color-bg-secondary);
+  --color-mid-gray: var(--color-text-secondary);
+}
+
+/* ------------------------------------------
+   Dark Theme
+   ------------------------------------------ */
+:root[data-theme="dark"] {
+  /* Background Colors */
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #334155;
+  --color-bg-elevated: #1e293b;
+  --color-bg-overlay: rgba(0, 0, 0, 0.7);
+
+  /* Text Colors */
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-tertiary: #64748b;
+  --color-text-inverse: #0f172a;
+
+  /* Border Colors */
+  --color-border-primary: #334155;
+  --color-border-secondary: #475569;
+  --color-border-focus: #a78bfa;
+
+  /* Interactive Colors */
+  --color-interactive-primary: #a78bfa;
+  --color-interactive-primary-hover: #8b5cf6;
+  --color-interactive-primary-active: #7c3aed;
+  --color-interactive-secondary: #334155;
+  --color-interactive-secondary-hover: #475569;
+  --color-interactive-secondary-active: #64748b;
+
+  /* Accent Colors */
+  --color-accent-purple: #a78bfa;
+  --color-accent-blue: #60a5fa;
+  --color-accent-gradient-start: #a78bfa;
+  --color-accent-gradient-end: #60a5fa;
+
+  /* Status Colors */
+  --color-status-recording: #f87171;
+  --color-status-processing: #a78bfa;
+  --color-status-success: #34d399;
+  --color-status-idle: #64748b;
+
+  /* Legacy compatibility */
+  --color-text: var(--color-text-primary);
+  --color-background: var(--color-bg-primary);
+  --color-logo-primary: var(--color-accent-purple);
+  --color-logo-stroke: var(--color-text-primary);
+  --color-text-stroke: var(--color-bg-secondary);
+  --color-mid-gray: var(--color-text-secondary);
+}
+
+/* ------------------------------------------
+   Purple Dream Theme (粉紫梦幻)
+   ------------------------------------------ */
+:root[data-theme="purple-dream"] {
+  --color-bg-primary: #faf5ff;
+  --color-bg-secondary: #f3e8ff;
+  --color-bg-tertiary: #e9d5ff;
+  --color-bg-elevated: #ffffff;
+  --color-bg-overlay: rgba(107, 33, 168, 0.3);
+
+  --color-text-primary: #581c87;
+  --color-text-secondary: #7c3aed;
+  --color-text-tertiary: #a78bfa;
+  --color-text-inverse: #ffffff;
+
+  --color-border-primary: #e9d5ff;
+  --color-border-secondary: #d8b4fe;
+  --color-border-focus: #7c3aed;
+
+  --color-interactive-primary: #7c3aed;
+  --color-interactive-primary-hover: #6d28d9;
+  --color-interactive-primary-active: #5b21b6;
+  --color-interactive-secondary: #f3e8ff;
+  --color-interactive-secondary-hover: #e9d5ff;
+  --color-interactive-secondary-active: #ddd6fe;
+
+  --color-accent-purple: #7c3aed;
+  --color-accent-blue: #8b5cf6;
+  --color-accent-gradient-start: #7c3aed;
+  --color-accent-gradient-end: #c084fc;
+
+  --color-status-recording: #f43f5e;
+  --color-status-processing: #7c3aed;
+  --color-status-success: #10b981;
+  --color-status-idle: #a78bfa;
+
+  --color-text: var(--color-text-primary);
+  --color-background: var(--color-bg-primary);
+  --color-logo-primary: var(--color-accent-purple);
+  --color-logo-stroke: var(--color-text-primary);
+  --color-text-stroke: var(--color-bg-secondary);
+  --color-mid-gray: var(--color-text-secondary);
+}
+
+/* ------------------------------------------
+   Midnight Blue Theme (午夜蓝)
+   ------------------------------------------ */
+:root[data-theme="midnight"] {
+  --color-bg-primary: #020617;
+  --color-bg-secondary: #0f172a;
+  --color-bg-tertiary: #1e293b;
+  --color-bg-elevated: #1e293b;
+  --color-bg-overlay: rgba(2, 6, 23, 0.8);
+
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-tertiary: #64748b;
+  --color-text-inverse: #020617;
+
+  --color-border-primary: #1e293b;
+  --color-border-secondary: #334155;
+  --color-border-focus: #60a5fa;
+
+  --color-interactive-primary: #3b82f6;
+  --color-interactive-primary-hover: #2563eb;
+  --color-interactive-primary-active: #1d4ed8;
+  --color-interactive-secondary: #1e293b;
+  --color-interactive-secondary-hover: #334155;
+  --color-interactive-secondary-active: #475569;
+
+  --color-accent-purple: #818cf8;
+  --color-accent-blue: #3b82f6;
+  --color-accent-gradient-start: #6366f1;
+  --color-accent-gradient-end: #3b82f6;
+
+  --color-status-recording: #f87171;
+  --color-status-processing: #60a5fa;
+  --color-status-success: #34d399;
+  --color-status-idle: #64748b;
+
+  --color-text: var(--color-text-primary);
+  --color-background: var(--color-bg-primary);
+  --color-logo-primary: var(--color-accent-blue);
+  --color-logo-stroke: var(--color-text-primary);
+  --color-text-stroke: var(--color-bg-secondary);
+  --color-mid-gray: var(--color-text-secondary);
+}
+
+/* ------------------------------------------
+   Warm Sunset Theme (暖色日落)
+   ------------------------------------------ */
+:root[data-theme="sunset"] {
+  --color-bg-primary: #fff7ed;
+  --color-bg-secondary: #ffedd5;
+  --color-bg-tertiary: #fed7aa;
+  --color-bg-elevated: #ffffff;
+  --color-bg-overlay: rgba(124, 45, 18, 0.3);
+
+  --color-text-primary: #7c2d12;
+  --color-text-secondary: #c2410c;
+  --color-text-tertiary: #f97316;
+  --color-text-inverse: #ffffff;
+
+  --color-border-primary: #fed7aa;
+  --color-border-secondary: #fdba74;
+  --color-border-focus: #ea580c;
+
+  --color-interactive-primary: #ea580c;
+  --color-interactive-primary-hover: #c2410c;
+  --color-interactive-primary-active: #9a3412;
+  --color-interactive-secondary: #ffedd5;
+  --color-interactive-secondary-hover: #fed7aa;
+  --color-interactive-secondary-active: #fdba74;
+
+  --color-accent-purple: #c2410c;
+  --color-accent-blue: #ea580c;
+  --color-accent-gradient-start: #ea580c;
+  --color-accent-gradient-end: #f97316;
+
+  --color-status-recording: #dc2626;
+  --color-status-processing: #ea580c;
+  --color-status-success: #16a34a;
+  --color-status-idle: #fb923c;
+
+  --color-text: var(--color-text-primary);
+  --color-background: var(--color-bg-primary);
+  --color-logo-primary: var(--color-accent-blue);
+  --color-logo-stroke: var(--color-text-primary);
+  --color-text-stroke: var(--color-bg-secondary);
+  --color-mid-gray: var(--color-text-secondary);
+}
+
+/* ------------------------------------------
+   Forest Green Theme (森林绿)
+   ------------------------------------------ */
+:root[data-theme="forest"] {
+  --color-bg-primary: #f0fdf4;
+  --color-bg-secondary: #dcfce7;
+  --color-bg-tertiary: #bbf7d0;
+  --color-bg-elevated: #ffffff;
+  --color-bg-overlay: rgba(20, 83, 45, 0.3);
+
+  --color-text-primary: #14532d;
+  --color-text-secondary: #166534;
+  --color-text-tertiary: #22c55e;
+  --color-text-inverse: #ffffff;
+
+  --color-border-primary: #bbf7d0;
+  --color-border-secondary: #86efac;
+  --color-border-focus: #16a34a;
+
+  --color-interactive-primary: #16a34a;
+  --color-interactive-primary-hover: #15803d;
+  --color-interactive-primary-active: #166534;
+  --color-interactive-secondary: #dcfce7;
+  --color-interactive-secondary-hover: #bbf7d0;
+  --color-interactive-secondary-active: #86efac;
+
+  --color-accent-purple: #15803d;
+  --color-accent-blue: #16a34a;
+  --color-accent-gradient-start: #16a34a;
+  --color-accent-gradient-end: #4ade80;
+
+  --color-status-recording: #dc2626;
+  --color-status-processing: #16a34a;
+  --color-status-success: #16a34a;
+  --color-status-idle: #4ade80;
+
+  --color-text: var(--color-text-primary);
+  --color-background: var(--color-bg-primary);
+  --color-logo-primary: var(--color-accent-blue);
+  --color-logo-stroke: var(--color-text-primary);
+  --color-text-stroke: var(--color-bg-secondary);
+  --color-mid-gray: var(--color-text-secondary);
+}
