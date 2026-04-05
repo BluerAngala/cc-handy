@@ -553,7 +553,7 @@ impl ModelManager {
                     },
                     ModelFile {
                         url: "https://hf-mirror.com/lovemefan/SenseVoice-onnx/resolve/main/chn_jpn_yue_eng_ko_spectok.bpe.model".to_string(),
-                        target_name: "tokens.txt".to_string(),
+                        target_name: "vocab.txt".to_string(),
                     },
                 ]),
                 sha256: None,
@@ -1385,17 +1385,19 @@ impl ModelManager {
                 total_downloaded += chunk.len() as u64;
                 
                 if last_emit.elapsed() >= throttle_duration {
+                    // Calculate percentage based on estimated total, but cap at 99.9%
+                    // to avoid showing 100% before all files are fully downloaded
                     let percentage = if total_size > 0 {
-                        (total_downloaded as f64 / total_size as f64) * 100.0
+                        ((total_downloaded as f64 / total_size as f64) * 100.0).min(99.9)
                     } else {
                         0.0
                     };
-                    
+
                     let progress = DownloadProgress {
                         model_id: model_id.to_string(),
                         downloaded: total_downloaded,
                         total: total_size,
-                        percentage: percentage.min(99.9), // Keep it under 100 until fully done
+                        percentage,
                     };
                     let _ = self.app_handle.emit("model-download-progress", &progress);
                     last_emit = Instant::now();
@@ -1417,11 +1419,12 @@ impl ModelManager {
             }
         }
         self.cancel_flags.lock().unwrap().remove(model_id);
-        
+
+        // Use actual total downloaded size for final progress
         let final_progress = DownloadProgress {
             model_id: model_id.to_string(),
-            downloaded: total_size,
-            total: total_size,
+            downloaded: total_downloaded,
+            total: total_downloaded,
             percentage: 100.0,
         };
         let _ = self.app_handle.emit("model-download-progress", &final_progress);
@@ -1957,6 +1960,7 @@ mod tests {
                 description: "Test".to_string(),
                 filename: "ggml-small.bin".to_string(),
                 url: Some("https://example.com".to_string()),
+                files: None,
                 sha256: None,
                 size_mb: 100,
                 is_downloaded: false,
