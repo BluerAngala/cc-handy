@@ -42,8 +42,12 @@
         "description": "准确度和速度均衡。"
       },
       "large": {
-        "name": "Whisper Large",
-        "description": "准确度高，但速度较慢。"
+        "name": "Whisper 大",
+        "description": "准确度好，但速度慢"
+      },
+      "belle-whisper-large-v3-zh": {
+        "name": "Belle Whisper 中文",
+        "description": "高度优化中文和中英混合语音"
       },
       "parakeet-tdt-0.6b-v2": {
         "name": "Parakeet V2",
@@ -69,13 +73,13 @@
         "name": "Moonshine V2 Medium",
         "description": "仅支持英语。高质量。"
       },
+      "sense-voice-int8": {
+        "name": "SenseVoice (阿里)",
+        "description": "极快。非常适合中文、英文、粤语及混合识别"
+      },
       "breeze-asr": {
         "name": "Breeze ASR",
-        "description": "针对台湾国语优化。支持语码转换。"
-      },
-      "sense-voice-int8": {
-        "name": "SenseVoice",
-        "description": "非常快速。支持中文、英语、日语、韩语、粤语。"
+        "description": "为台湾国语优化。支持中英混合"
       },
       "gigaam-v3-e2e-ctc": {
         "name": "GigaAM v3",

@@ -1,1 +1,3 @@
-[build]
+# Cargo git proxy configurations for Handy
+[net]
+git-fetch-with-cli = true

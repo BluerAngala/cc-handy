@@ -37,6 +37,7 @@ interface ModelsStore {
   // Actions
   initialize: () => Promise<void>;
   loadModels: () => Promise<void>;
+  fetchLatestMarket: (sort?: string, limit?: number) => Promise<void>;
   loadCurrentModel: () => Promise<void>;
   checkFirstRun: () => Promise<boolean>;
   selectModel: (modelId: string) => Promise<boolean>;
@@ -114,6 +115,19 @@ export const useModelStore = create<ModelsStore>()(
         set({ error: `Failed to load models: ${err}` });
       } finally {
         set({ loading: false });
+      }
+    },
+
+    fetchLatestMarket: async (sort?: string, limit?: number) => {
+      try {
+        const result = await commands.fetchLatestMarket(sort ?? null, limit ?? null);
+        if (result.status === "ok") {
+          set({ models: result.data, error: null });
+        } else {
+          set({ error: result.error });
+        }
+      } catch (err) {
+        set({ error: String(err) });
       }
     },
 

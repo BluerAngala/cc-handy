@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ask } from "@tauri-apps/plugin-dialog";
 import { ChevronDown, Globe } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 import type { ModelCardStatus } from "@/components/onboarding";
 import { ModelCard } from "@/components/onboarding";
 import { useModelStore } from "@/stores/modelStore";
@@ -19,6 +20,9 @@ export const ModelsSettings: React.FC = () => {
   const [languageFilter, setLanguageFilter] = useState("all");
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
   const [languageSearch, setLanguageSearch] = useState("");
+  const [isFetchingMarket, setIsFetchingMarket] = useState(false);
+  const [marketSort, setMarketSort] = useState<string>("trendingScore");
+  const [marketLimit, setMarketLimit] = useState<number>(20);
   const languageDropdownRef = useRef<HTMLDivElement>(null);
   const languageSearchInputRef = useRef<HTMLInputElement>(null);
   const {
@@ -34,6 +38,7 @@ export const ModelsSettings: React.FC = () => {
     cancelDownload,
     selectModel,
     deleteModel,
+    fetchLatestMarket,
   } = useModelStore();
 
   // click outside handler for language dropdown
@@ -170,7 +175,6 @@ export const ModelsSettings: React.FC = () => {
 
     for (const model of filteredModels) {
       if (
-        model.is_custom ||
         model.is_downloaded ||
         model.id in downloadingModels ||
         model.id in extractingModels
@@ -189,11 +193,27 @@ export const ModelsSettings: React.FC = () => {
       return 0;
     });
 
+    // Sort available models based on the selected market sort
+    available.sort((a, b) => {
+      if (marketSort === "trendingScore") {
+        return (b.trending_score || 0) - (a.trending_score || 0);
+      } else if (marketSort === "downloads") {
+        return (b.downloads || 0) - (a.downloads || 0);
+      } else if (marketSort === "likes") {
+        return (b.likes || 0) - (a.likes || 0);
+      } else if (marketSort === "createdAt") {
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return dateB - dateA;
+      }
+      return 0;
+    });
+
     return {
       downloadedModels: downloaded,
       availableModels: available,
     };
-  }, [filteredModels, downloadingModels, extractingModels, currentModel]);
+  }, [filteredModels, downloadingModels, extractingModels, currentModel, marketSort]);
 
   if (loading) {
     return (
@@ -335,9 +355,65 @@ export const ModelsSettings: React.FC = () => {
           {/* Available Models Section */}
           {availableModels.length > 0 && (
             <div className="space-y-3">
-              <h2 className="text-sm font-medium text-text/60">
-                {t("settings.models.availableModels")}
-              </h2>
+              <div className="flex justify-between items-center">
+                <h2 className="text-sm font-medium text-text/60">
+                  {t("settings.models.availableModels")}
+                </h2>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={marketSort}
+                    onChange={async (e) => {
+                      const newSort = e.target.value;
+                      setMarketSort(newSort);
+                      setIsFetchingMarket(true);
+                      try {
+                        await fetchLatestMarket(newSort, marketLimit);
+                      } finally {
+                        setIsFetchingMarket(false);
+                      }
+                    }}
+                    className="bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-text/80 outline-none focus:border-logo-primary"
+                  >
+                    <option value="trendingScore">最热门 (Trending)</option>
+                    <option value="downloads">最多下载 (Downloads)</option>
+                    <option value="createdAt">最新发布 (Newest)</option>
+                    <option value="likes">最多点赞 (Likes)</option>
+                  </select>
+                  <select
+                    value={marketLimit}
+                    onChange={async (e) => {
+                      const newLimit = Number(e.target.value);
+                      setMarketLimit(newLimit);
+                      setIsFetchingMarket(true);
+                      try {
+                        await fetchLatestMarket(marketSort, newLimit);
+                      } finally {
+                        setIsFetchingMarket(false);
+                      }
+                    }}
+                    className="bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-text/80 outline-none focus:border-logo-primary"
+                  >
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                  <button
+                    onClick={async () => {
+                      setIsFetchingMarket(true);
+                      try {
+                        await fetchLatestMarket(marketSort, marketLimit);
+                      } finally {
+                        setIsFetchingMarket(false);
+                      }
+                    }}
+                    disabled={isFetchingMarket}
+                    className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-text/60 hover:text-text bg-white/5 hover:bg-white/10 border border-white/5 rounded-md transition-colors"
+                  >
+                    <RefreshCcw className={`w-3.5 h-3.5 ${isFetchingMarket ? 'animate-spin' : ''}`} />
+                    Refresh Market
+                  </button>
+                </div>
+              </div>
               {availableModels.map((model: ModelInfo) => (
                 <ModelCard
                   key={model.id}

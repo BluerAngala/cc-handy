@@ -45,6 +45,14 @@
         "name": "Whisper Large",
         "description": "Good accuracy, but slow."
       },
+      "belle-whisper-large-v3-zh": {
+        "name": "Belle Whisper ZH",
+        "description": "Highly optimized for Chinese and Chinese-English mixed speech."
+      },
+      "sense-voice-int8": {
+        "name": "SenseVoice (Alibaba)",
+        "description": "Very fast. Excellent for Chinese, English, Cantonese, and mixed speech."
+      },
       "parakeet-tdt-0.6b-v2": {
         "name": "Parakeet V2",
         "description": "English only. The best model for English speakers."

@@ -17,8 +17,9 @@ use std::time::{Duration, Instant};
 use tar::Archive;
 use tauri::{AppHandle, Emitter, Manager};
 
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Type, Default)]
 pub enum EngineType {
+    #[default]
     Whisper,
     Parakeet,
     Moonshine,
@@ -29,7 +30,8 @@ pub enum EngineType {
     Cohere,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Type)]
+#[derive(Debug, Clone, Serialize, Deserialize, Type, Default)]
+#[serde(default)]
 pub struct ModelInfo {
     pub id: String,
     pub name: String,
@@ -50,6 +52,10 @@ pub struct ModelInfo {
     pub supported_languages: Vec<String>, // Languages this model can transcribe
     pub supports_language_selection: bool, // Whether the user can explicitly pick a language
     pub is_custom: bool,            // Whether this is a user-provided custom model
+    pub downloads: Option<u64>,
+    pub likes: Option<u64>,
+    pub created_at: Option<String>,
+    pub trending_score: Option<u64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type)]
@@ -147,6 +153,10 @@ impl ModelManager {
                 supported_languages: whisper_languages.clone(),
                 supports_language_selection: true,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -175,6 +185,10 @@ impl ModelManager {
                 supported_languages: whisper_languages.clone(),
                 supports_language_selection: true,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -202,6 +216,10 @@ impl ModelManager {
                 supported_languages: whisper_languages.clone(),
                 supports_language_selection: true,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -229,6 +247,10 @@ impl ModelManager {
                 supported_languages: whisper_languages.clone(),
                 supports_language_selection: true,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -240,10 +262,8 @@ impl ModelManager {
                 description: "Optimized for Taiwanese Mandarin. Code-switching support."
                     .to_string(),
                 filename: "breeze-asr-q5_k.bin".to_string(),
-                url: Some("https://blob.handy.computer/breeze-asr-q5_k.bin".to_string()),
-                sha256: Some(
-                    "8efbf0ce8a3f50fe332b7617da787fb81354b358c288b008d3bdef8359df64c6".to_string(),
-                ),
+                url: Some("https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-breeze-asr-q5_k.bin".to_string()),
+                sha256: None, // Disabling checksum temporarily for direct HF mirrors
                 size_mb: 1030,
                 is_downloaded: false,
                 is_downloading: false,
@@ -254,9 +274,44 @@ impl ModelManager {
                 speed_score: 0.35,
                 supports_translation: false,
                 is_recommended: false,
-                supported_languages: whisper_languages,
+                supported_languages: whisper_languages.clone(),
                 supports_language_selection: true,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
+            },
+        );
+
+        // Add Belle-whisper-large-v3-zh
+        available_models.insert(
+            "belle-whisper-large-v3-zh".to_string(),
+            ModelInfo {
+                id: "belle-whisper-large-v3-zh".to_string(),
+                name: "Belle Whisper ZH (Large)".to_string(),
+                description: "Highly optimized for Chinese and Chinese-English mixed speech."
+                    .to_string(),
+                filename: "ggml-belle-large-v3-zh-q5_0.bin".to_string(),
+                url: Some("https://hf-mirror.com/BELLE-2/Belle-whisper-large-v3-zh-ggml/resolve/main/ggml-model-q5_0.bin".to_string()),
+                sha256: None,
+                size_mb: 1080,
+                is_downloaded: false,
+                is_downloading: false,
+                partial_size: 0,
+                is_directory: false,
+                engine_type: EngineType::Whisper,
+                accuracy_score: 0.95,
+                speed_score: 0.30,
+                supports_translation: true,
+                is_recommended: true,
+                supported_languages: whisper_languages.clone(),
+                supports_language_selection: true,
+                is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -285,6 +340,10 @@ impl ModelManager {
                 supported_languages: vec!["en".to_string()],
                 supports_language_selection: false,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -322,6 +381,10 @@ impl ModelManager {
                 supported_languages: parakeet_v3_languages,
                 supports_language_selection: false,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -349,6 +412,10 @@ impl ModelManager {
                 supported_languages: vec!["en".to_string()],
                 supports_language_selection: false,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -378,6 +445,10 @@ impl ModelManager {
                 supported_languages: vec!["en".to_string()],
                 supports_language_selection: false,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -407,6 +478,10 @@ impl ModelManager {
                 supported_languages: vec!["en".to_string()],
                 supports_language_selection: false,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -436,6 +511,10 @@ impl ModelManager {
                 supported_languages: vec!["en".to_string()],
                 supports_language_selection: false,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -450,27 +529,29 @@ impl ModelManager {
             "sense-voice-int8".to_string(),
             ModelInfo {
                 id: "sense-voice-int8".to_string(),
-                name: "SenseVoice".to_string(),
+                name: "SenseVoice (Alibaba)".to_string(),
                 description: "Very fast. Chinese, English, Japanese, Korean, Cantonese."
                     .to_string(),
                 filename: "sense-voice-int8".to_string(),
-                url: Some("https://blob.handy.computer/sense-voice-int8.tar.gz".to_string()),
-                sha256: Some(
-                    "171d611fe5d353a50bbb741b6f3ef42559b1565685684e9aa888ef563ba3e8a4".to_string(),
-                ),
+                url: Some("https://hf-mirror.com/cjpais/sense-voice-int8/resolve/main/sense-voice-int8.tar.gz".to_string()),
+                sha256: None,
                 size_mb: 152,
                 is_downloaded: false,
                 is_downloading: false,
                 partial_size: 0,
                 is_directory: true,
                 engine_type: EngineType::SenseVoice,
-                accuracy_score: 0.65,
+                accuracy_score: 0.85,
                 speed_score: 0.95,
                 supports_translation: false,
-                is_recommended: false,
+                is_recommended: true,
                 supported_languages: sense_voice_languages,
                 supports_language_selection: true,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -501,6 +582,10 @@ impl ModelManager {
                 supported_languages: gigaam_languages,
                 supports_language_selection: false,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -535,6 +620,10 @@ impl ModelManager {
                 supported_languages: canary_flash_languages,
                 supports_language_selection: true,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -572,6 +661,10 @@ impl ModelManager {
                 supported_languages: canary_1b_languages,
                 supports_language_selection: true,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
@@ -607,12 +700,31 @@ impl ModelManager {
                 supported_languages: cohere_languages,
                 supports_language_selection: true,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 
         // Auto-discover custom Whisper models (.bin files) in the models directory
         if let Err(e) = Self::discover_custom_whisper_models(&models_dir, &mut available_models) {
             warn!("Failed to discover custom models: {}", e);
+        }
+
+        // Try to load models from the local market.json
+        let market_json_path = models_dir.parent().unwrap().join("market.json");
+        if market_json_path.exists() {
+            if let Ok(content) = fs::read_to_string(&market_json_path) {
+                if let Ok(market_models) = serde_json::from_str::<Vec<ModelInfo>>(&content) {
+                    info!("Loaded {} models from local market.json", market_models.len());
+                    for model in market_models {
+                        available_models.insert(model.id.clone(), model);
+                    }
+                } else {
+                    warn!("Failed to parse local market.json");
+                }
+            }
         }
 
         let manager = Self {
@@ -646,6 +758,169 @@ impl ModelManager {
     pub fn get_model_info(&self, model_id: &str) -> Option<ModelInfo> {
         let models = self.available_models.lock().unwrap();
         models.get(model_id).cloned()
+    }
+
+    pub async fn update_market_models(&self, url: &str) -> Result<()> {
+        info!("Fetching market models from HF API: {}", url);
+        
+        let client = reqwest::Client::builder()
+            .timeout(std::time::Duration::from_secs(10))
+            .build()?;
+            
+        let response = client.get(url).send().await?.error_for_status()?;
+        let content = response.text().await?;
+        
+        // HF returns an array directly
+        let hf_models: Vec<serde_json::Value> = serde_json::from_str(&content).map_err(|e| {
+            log::error!("Failed to parse HF JSON: {}", e);
+            e
+        })?;
+        
+        info!("Fetched {} models from HF market", hf_models.len());
+        
+        let mut market_models = Vec::new();
+        
+        for item in hf_models {
+            if let Some(id) = item.get("id").and_then(|v| v.as_str()) {
+                // HF model id format is usually "author/model-name"
+                let safe_id = id.replace("/", "_");
+                let name = id.split('/').last().unwrap_or(id).to_string();
+                
+                // Determine engine type based on tags
+                let mut engine_type = EngineType::Whisper;
+                let mut supported_languages = Vec::new();
+                let tags = item.get("tags").and_then(|v| v.as_array());
+                if let Some(tags_arr) = tags {
+                    for tag in tags_arr {
+                        if let Some(tag_str) = tag.as_str() {
+                            let tag_lower = tag_str.to_lowercase();
+                            if tag_lower.contains("sensevoice") {
+                                engine_type = EngineType::SenseVoice;
+                            } else if tag_lower.contains("parakeet") {
+                                engine_type = EngineType::Parakeet;
+                            } else if tag_lower.contains("canary") {
+                                engine_type = EngineType::Canary;
+                            } else if tag_lower.contains("cohere") {
+                                engine_type = EngineType::Cohere;
+                            }
+                            
+                            // Check for language tags (usually 2-letter codes)
+                            if tag_str.len() == 2 {
+                                supported_languages.push(tag_str.to_string());
+                            } else if tag_str.len() == 3 {
+                                // Sometimes 3-letter language codes are used
+                                supported_languages.push(tag_str.to_string());
+                            } else if tag_str.starts_with("zh-") {
+                                supported_languages.push(tag_str.to_string());
+                            }
+                        }
+                    }
+                }
+                
+                // Remove duplicates and sort
+                supported_languages.sort();
+                supported_languages.dedup();
+                
+                // If no languages found but it's an ASR model, assume it supports at least English
+                if supported_languages.is_empty() {
+                    supported_languages = vec!["en".to_string()];
+                }
+                
+                let supports_translation = supported_languages.len() > 1;
+                
+                let downloads = item.get("downloads").and_then(|v| v.as_u64().or_else(|| v.as_f64().map(|f| f as u64)));
+                let likes = item.get("likes").and_then(|v| v.as_u64().or_else(|| v.as_f64().map(|f| f as u64)));
+                let created_at = item.get("createdAt").and_then(|v| v.as_str()).map(|s| s.to_string());
+                let trending_score = item.get("trendingScore").and_then(|v| v.as_u64().or_else(|| v.as_f64().map(|f| f as u64)));
+                
+                let mut accuracy_score = 0.80;
+                let mut speed_score = 0.50;
+                
+                // Attempt to infer scores from tags/name
+                let name_lower = name.to_lowercase();
+                if name_lower.contains("turbo") {
+                    accuracy_score = 0.80;
+                    speed_score = 0.40;
+                } else if name_lower.contains("large") {
+                    accuracy_score = 0.90;
+                    speed_score = 0.20;
+                } else if name_lower.contains("medium") {
+                    accuracy_score = 0.75;
+                    speed_score = 0.60;
+                } else if name_lower.contains("small") {
+                    accuracy_score = 0.60;
+                    speed_score = 0.85;
+                } else if name_lower.contains("tiny") || name_lower.contains("base") {
+                    accuracy_score = 0.50;
+                    speed_score = 0.95;
+                } else if engine_type == EngineType::SenseVoice {
+                    accuracy_score = 0.90;
+                    speed_score = 0.90;
+                } else if engine_type == EngineType::Moonshine || engine_type == EngineType::MoonshineStreaming {
+                    accuracy_score = 0.70;
+                    speed_score = 0.90;
+                }
+                
+                market_models.push(ModelInfo {
+                    id: safe_id.clone(),
+                    name: format!("{} (HF)", name),
+                    description: format!("From HuggingFace"),
+                    filename: format!("{}.bin", safe_id),
+                    // Construct a generic HF mirror download URL. 
+                    // Note: This is an approximation as we don't know the exact file name inside the repo.
+                    url: Some(format!("https://hf-mirror.com/{}/resolve/main/ggml-model.bin", id)),
+                    sha256: None,
+                    size_mb: 0, // Placeholder for unknown size
+                    is_downloaded: false,
+                    is_downloading: false,
+                    partial_size: 0,
+                    is_directory: false,
+                    engine_type,
+                    accuracy_score,
+                    speed_score,
+                    supports_translation,
+                    is_recommended: false,
+                    supported_languages, // Assume basic support
+                    supports_language_selection: true,
+                    is_custom: true,
+                    downloads,
+                    likes,
+                    created_at,
+                    trending_score,
+                });
+            }
+        }
+        
+        // Save to local market.json
+        let market_json_path = self.models_dir.parent().unwrap().join("market.json");
+        fs::write(&market_json_path, serde_json::to_string_pretty(&market_models)?)?;
+        
+        // Merge into available_models
+        let mut models = self.available_models.lock().unwrap();
+        for mut model in market_models {
+            // Check if already downloaded
+            let model_path = self.get_model_path(&model.id).unwrap_or_default();
+            model.is_downloaded = model_path.exists();
+            
+            // If the model already exists in our dictionary, we want to update its dynamic properties
+            // like downloads, likes, trending score, etc. but preserve things like its local path/filename
+            if let Some(existing_model) = models.get_mut(&model.id) {
+                existing_model.downloads = model.downloads;
+                existing_model.likes = model.likes;
+                existing_model.trending_score = model.trending_score;
+                existing_model.created_at = model.created_at;
+                existing_model.supported_languages = model.supported_languages;
+                existing_model.supports_translation = model.supports_translation;
+                existing_model.engine_type = model.engine_type;
+                existing_model.accuracy_score = model.accuracy_score;
+                existing_model.speed_score = model.speed_score;
+            } else {
+                // For new models from the market
+                models.insert(model.id.clone(), model);
+            }
+        }
+        
+        Ok(())
     }
 
     fn migrate_bundled_models(&self) -> Result<()> {
@@ -927,6 +1202,10 @@ impl ModelManager {
                     supported_languages: vec![],
                     supports_language_selection: true,
                     is_custom: true,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
                 },
             );
         }
@@ -1520,6 +1799,10 @@ mod tests {
                 supported_languages: vec!["en".to_string()],
                 supports_language_selection: true,
                 is_custom: false,
+                downloads: None,
+                likes: None,
+                created_at: None,
+                trending_score: None,
             },
         );
 

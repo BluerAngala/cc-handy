@@ -124,6 +124,7 @@ fn build_apple_intelligence_bridge() {
     println!("cargo:rerun-if-changed={REAL_SWIFT_FILE}");
     println!("cargo:rerun-if-changed={STUB_SWIFT_FILE}");
     println!("cargo:rerun-if-changed={BRIDGE_HEADER}");
+    println!("cargo:rerun-if-env-changed=HANDY_APPLE_INTELLIGENCE");
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").expect("OUT_DIR not set"));
     let object_path = out_dir.join("apple_intelligence.o");
@@ -145,7 +146,13 @@ fn build_apple_intelligence_bridge() {
         Path::new(&sdk_path).join("System/Library/Frameworks/FoundationModels.framework");
     let has_foundation_models = framework_path.exists();
 
-    let source_file = if has_foundation_models {
+    let apple_intelligence_mode =
+        env::var("HANDY_APPLE_INTELLIGENCE").unwrap_or_else(|_| "auto".to_string());
+
+    let source_file = if apple_intelligence_mode.eq_ignore_ascii_case("stub") {
+        println!("cargo:warning=Building with Apple Intelligence stubs (forced by HANDY_APPLE_INTELLIGENCE=stub).");
+        STUB_SWIFT_FILE
+    } else if has_foundation_models {
         println!("cargo:warning=Building with Apple Intelligence support.");
         REAL_SWIFT_FILE
     } else {

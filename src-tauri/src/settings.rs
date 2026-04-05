@@ -333,6 +333,11 @@ impl std::ops::DerefMut for SecretMap {
     }
 }
 
+fn default_market_url() -> String {
+    // Default request to huggingface mirror to search for models with whisper and automatic-speech-recognition tags
+    "https://hf-mirror.com/api/models?search=whisper&filter=automatic-speech-recognition&sort=downloads&direction=-1&limit=20".to_string()
+}
+
 /* still handy for composing the initial JSON in the store ------------- */
 #[derive(Serialize, Deserialize, Debug, Clone, Type)]
 pub struct AppSettings {
@@ -351,6 +356,8 @@ pub struct AppSettings {
     pub update_checks_enabled: bool,
     #[serde(default = "default_model")]
     pub selected_model: String,
+    #[serde(default = "default_market_url")]
+    pub model_market_url: String,
     #[serde(default = "default_always_on_microphone")]
     pub always_on_microphone: bool,
     #[serde(default)]
@@ -764,6 +771,7 @@ pub fn get_default_settings() -> AppSettings {
         autostart_enabled: default_autostart_enabled(),
         update_checks_enabled: default_update_checks_enabled(),
         selected_model: "".to_string(),
+        model_market_url: default_market_url(),
         always_on_microphone: false,
         selected_microphone: None,
         clamshell_microphone: None,

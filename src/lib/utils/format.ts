@@ -19,3 +19,22 @@ export const formatModelSize = (sizeMb: number | null | undefined): string => {
 
   return `${formatter.format(sizeMb)} MB`;
 };
+
+export const formatNumberK = (num: number | null | undefined): string => {
+  if (num === null || num === undefined || !Number.isFinite(num)) {
+    return "0";
+  }
+  
+  if (num >= 1000) {
+    // Force 'en-US' to use 'K' instead of localized variants like '万'
+    const formatter = new Intl.NumberFormat("en-US", {
+      notation: "compact",
+      compactDisplay: "short",
+      maximumFractionDigits: 1,
+    });
+    return formatter.format(num);
+  }
+  
+  return num.toLocaleString();
+};
+

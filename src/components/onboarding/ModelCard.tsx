@@ -7,9 +7,13 @@ import {
   Languages,
   Loader2,
   Trash2,
+  Clock,
+  ThumbsUp,
+  HardDrive,
+  Flame,
 } from "lucide-react";
 import type { ModelInfo } from "@/bindings";
-import { formatModelSize } from "../../lib/utils/format";
+import { formatModelSize, formatNumberK } from "../../lib/utils/format";
 import {
   getTranslatedModelDescription,
   getTranslatedModelName,
@@ -194,7 +198,7 @@ const ModelCard: React.FC<ModelCardProps> = ({
       <hr className="w-full border-mid-gray/20" />
 
       {/* Bottom row: tags + action buttons (full width) */}
-      <div className="flex items-center gap-3 w-full -mb-0.5 mt-0.5 h-5">
+      <div className="flex flex-wrap items-center gap-3 w-full -mb-0.5 mt-0.5 min-h-[20px]">
         {model.supported_languages.length > 0 && (
           <div
             className="flex items-center gap-1 text-xs text-text/50"
@@ -217,9 +221,38 @@ const ModelCard: React.FC<ModelCardProps> = ({
             <span>{t("modelSelector.capabilities.translate")}</span>
           </div>
         )}
-        {status === "downloadable" && (
-          <span className="flex items-center gap-1.5 ms-auto text-xs text-text/50">
+        
+        {model.trending_score !== null && model.trending_score !== undefined && (
+          <div className="flex items-center gap-1 text-xs text-text/50" title="Trending Score">
+            <Flame className="w-3.5 h-3.5" />
+            <span>{formatNumberK(model.trending_score)}</span>
+          </div>
+        )}
+        
+        {model.downloads !== null && model.downloads !== undefined && (
+          <div className="flex items-center gap-1 text-xs text-text/50" title="Downloads">
             <Download className="w-3.5 h-3.5" />
+            <span>{formatNumberK(model.downloads)}</span>
+          </div>
+        )}
+        
+        {model.likes !== null && model.likes !== undefined && (
+          <div className="flex items-center gap-1 text-xs text-text/50" title="Likes">
+            <ThumbsUp className="w-3.5 h-3.5" />
+            <span>{formatNumberK(model.likes)}</span>
+          </div>
+        )}
+        
+        {model.created_at !== null && model.created_at !== undefined && (
+          <div className="flex items-center gap-1 text-xs text-text/50" title="Created At">
+            <Clock className="w-3.5 h-3.5" />
+            <span>{new Date(model.created_at).toLocaleDateString()}</span>
+          </div>
+        )}
+
+        {status === "downloadable" && model.size_mb > 0 && (
+          <span className="flex items-center gap-1.5 ms-auto text-xs text-text/50">
+            <HardDrive className="w-3.5 h-3.5" />
             <span>{formatModelSize(Number(model.size_mb))}</span>
           </span>
         )}
