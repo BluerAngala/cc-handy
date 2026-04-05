@@ -545,19 +545,12 @@ impl ModelManager {
                 description: "Very fast. Chinese, English, Japanese, Korean, Cantonese."
                     .to_string(),
                 filename: "sense-voice-int8".to_string(),
-                url: None,
-                files: Some(vec![
-                    ModelFile {
-                        url: "https://hf-mirror.com/lovemefan/SenseVoice-onnx/resolve/main/sense-voice-encoder-int8.onnx".to_string(),
-                        target_name: "model.int8.onnx".to_string(),
-                    },
-                    ModelFile {
-                        url: "https://hf-mirror.com/lovemefan/SenseVoice-onnx/resolve/main/chn_jpn_yue_eng_ko_spectok.bpe.model".to_string(),
-                        target_name: "vocab.txt".to_string(),
-                    },
-                ]),
-                sha256: None,
-                size_mb: 152,
+                url: Some("https://blob.handy.computer/sense-voice-int8.tar.gz".to_string()),
+                files: None,
+                sha256: Some(
+                    "171d611fe5d353a50bbb741b6f3ef42559b1565685684e9aa888ef563ba3e8a4".to_string(),
+                ),
+                size_mb: 153,
                 is_downloaded: false,
                 is_downloading: false,
                 partial_size: 0,
@@ -777,6 +770,8 @@ impl ModelManager {
     }
 
     pub fn get_available_models(&self) -> Vec<ModelInfo> {
+        // Sync download status from filesystem before returning
+        let _ = self.update_download_status();
         let models = self.available_models.lock().unwrap();
         models.values().cloned().collect()
     }
