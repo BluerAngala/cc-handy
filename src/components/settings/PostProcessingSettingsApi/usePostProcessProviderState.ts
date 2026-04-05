@@ -130,13 +130,17 @@ export const usePostProcessProviderState = (): PostProcessProviderState => {
   );
 
   const handleApiKeyChange = useCallback(
-    (value: string) => {
+    async (value: string) => {
       const trimmed = value.trim();
       if (trimmed !== apiKey) {
-        void updatePostProcessApiKey(selectedProviderId, trimmed);
+        await updatePostProcessApiKey(selectedProviderId, trimmed);
+        // 如果输入了 API Key，自动获取模型列表
+        if (trimmed && !isAppleProvider) {
+          void fetchPostProcessModels(selectedProviderId);
+        }
       }
     },
-    [apiKey, selectedProviderId, updatePostProcessApiKey],
+    [apiKey, selectedProviderId, updatePostProcessApiKey, fetchPostProcessModels, isAppleProvider],
   );
 
   const handleModelChange = useCallback(

@@ -511,13 +511,7 @@ export const useSettingsStore = create<SettingsStore>()(
     },
 
     updatePostProcessApiKey: async (providerId, apiKey) => {
-      // Clear cached models when API key changes - user should click refresh after
-      set((state) => ({
-        postProcessModelOptions: {
-          ...state.postProcessModelOptions,
-          [providerId]: [],
-        },
-      }));
+      // 不再清空模型列表，因为会自动获取新的模型列表
       return get().updatePostProcessSetting("api_key", providerId, apiKey);
     },
 
