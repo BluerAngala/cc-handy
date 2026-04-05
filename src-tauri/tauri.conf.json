@@ -65,7 +65,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEJBQjcyMDk1MjA2NjAxRjkKUldUNUFXWWdsU0MzdXRRZi8zYzhqV2FaNUVDbDd2Rk5VM1IvWWowVXdmRFNKQ1BrMXF5RFFsLy8K",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEIwRDBCQTg1NDdEQkNFNkYKUldSdnp0dEhoYnJRc0l4RU4vR0JSRmg0akNxMThuQkF2L05GN1VKbHIzaEh6MlAvdHIyMHJ2YTYK",
       "endpoints": [
         "https://github.com/BluerAngala/cc-handy/releases/latest/download/latest.json"
       ]
