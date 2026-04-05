@@ -156,11 +156,37 @@ const PostProcessingSettingsPromptsComponent: React.FC = () => {
   const selectedPrompt =
     prompts.find((prompt) => prompt.id === selectedPromptId) || null;
 
+  // Get display name for a prompt - use i18n for builtin prompts, otherwise use the stored name
+  const getPromptDisplayName = (prompt: { id: string; name: string }): string => {
+    const builtinKeys: Record<string, string> = {
+      basic_text_correction: "settings.postProcessing.prompts.builtin.basicTextCorrection",
+      deep_polish: "settings.postProcessing.prompts.builtin.deepPolish",
+      meeting_minutes: "settings.postProcessing.prompts.builtin.meetingMinutes",
+      idea_organization: "settings.postProcessing.prompts.builtin.ideaOrganization",
+      keyword_highlight: "settings.postProcessing.prompts.builtin.keywordHighlight",
+      interview_transcript: "settings.postProcessing.prompts.builtin.interviewTranscript",
+      academic_document: "settings.postProcessing.prompts.builtin.academicDocument",
+      minimal_correction: "settings.postProcessing.prompts.builtin.minimalCorrection",
+    };
+
+    const i18nKey = builtinKeys[prompt.id];
+    if (i18nKey) {
+      const translated = t(i18nKey);
+      // If translation exists and is not the same as the key, use it
+      if (translated && translated !== i18nKey) {
+        return translated;
+      }
+    }
+    // Fallback to stored name for custom prompts
+    return prompt.name;
+  };
+
   useEffect(() => {
     if (isCreating) return;
 
     if (selectedPrompt) {
-      setDraftName(selectedPrompt.name);
+      // For builtin prompts, use the display name (translated), otherwise use stored name
+      setDraftName(getPromptDisplayName(selectedPrompt));
       setDraftText(selectedPrompt.prompt);
     } else {
       setDraftName("");
@@ -169,8 +195,7 @@ const PostProcessingSettingsPromptsComponent: React.FC = () => {
   }, [
     isCreating,
     selectedPromptId,
-    selectedPrompt?.name,
-    selectedPrompt?.prompt,
+    selectedPrompt,
   ]);
 
   const handlePromptSelect = (promptId: string | null) => {
@@ -263,7 +288,7 @@ const PostProcessingSettingsPromptsComponent: React.FC = () => {
             selectedValue={selectedPromptId || null}
             options={prompts.map((p) => ({
               value: p.id,
-              label: p.name,
+              label: getPromptDisplayName(p),
             }))}
             onSelect={(value) => handlePromptSelect(value)}
             placeholder={

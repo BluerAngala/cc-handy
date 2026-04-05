@@ -421,7 +421,17 @@
         "createPrompt": "创建提示词",
         "cancel": "取消",
         "selectToEdit": "选择上方的提示词以查看和编辑其详细信息。",
-        "createFirst": "点击上方的「创建新提示词」来创建您的第一个后处理提示词。"
+        "createFirst": "点击上方的「创建新提示词」来创建您的第一个后处理提示词。",
+        "builtin": {
+          "basicTextCorrection": "基础文字纠错",
+          "deepPolish": "深度整理优化",
+          "meetingMinutes": "会议记录整理",
+          "ideaOrganization": "思路整理与写作",
+          "keywordHighlight": "关键词标注模式",
+          "interviewTranscript": "访谈采访整理",
+          "academicDocument": "学术技术文档",
+          "minimalCorrection": "简洁修正模式"
+        }
       }
     },
     "history": {

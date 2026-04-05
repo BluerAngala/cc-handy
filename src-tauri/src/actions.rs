@@ -5,6 +5,7 @@ use crate::audio_toolkit::{is_microphone_access_denied, is_no_input_device_error
 use crate::managers::audio::AudioRecordingManager;
 use crate::managers::history::HistoryManager;
 use crate::managers::transcription::TranscriptionManager;
+use crate::post_process_settings::detect_voice_command;
 use crate::settings::{get_settings, AppSettings, APPLE_INTELLIGENCE_PROVIDER_ID};
 use crate::shortcut;
 use crate::tray::{change_tray_icon, TrayIconState};
@@ -63,7 +64,7 @@ fn build_system_prompt(prompt_template: &str) -> String {
     prompt_template.replace("${output}", "").trim().to_string()
 }
 
-async fn post_process_transcription(settings: &AppSettings, transcription: &str) -> Option<String> {
+async fn post_process_transcription(settings: &AppSettings, transcription: &str, override_prompt_id: Option<String>) -> Option<String> {
     let provider = match settings.active_post_process_provider().cloned() {
         Some(provider) => provider,
         None => {
@@ -86,13 +87,9 @@ async fn post_process_transcription(settings: &AppSettings, transcription: &str)
         return None;
     }
 
-    let selected_prompt_id = match &settings.post_process_selected_prompt_id {
-        Some(id) => id.clone(),
-        None => {
-            debug!("Post-processing skipped because no prompt is selected");
-            return None;
-        }
-    };
+    // Use override prompt ID from voice command, or fall back to selected prompt
+    let selected_prompt_id = override_prompt_id
+        .or_else(|| settings.post_process_selected_prompt_id.clone())?;
 
     let prompt = match settings
         .post_process_prompts
@@ -331,20 +328,36 @@ pub(crate) async fn process_transcription_output(
     let mut post_processed_text: Option<String> = None;
     let mut post_process_prompt: Option<String> = None;
 
-    if let Some(converted_text) = maybe_convert_chinese_variant(&settings, transcription).await {
+    // Detect voice command for dynamic prompt selection
+    let (cleaned_text, voice_prompt_id) = detect_voice_command(&final_text);
+    
+    // If voice command detected, use the cleaned text
+    if voice_prompt_id.is_some() {
+        debug!("Voice command detected, using prompt: {:?}", voice_prompt_id);
+        final_text = cleaned_text;
+    }
+
+    if let Some(converted_text) = maybe_convert_chinese_variant(&settings, &final_text).await {
         final_text = converted_text;
     }
 
-    if post_process {
-        if let Some(processed_text) = post_process_transcription(&settings, &final_text).await {
+    // Post-process if either: (1) explicitly requested via shortcut, (2) enabled in settings, or (3) voice command detected
+    let should_post_process = post_process || settings.post_process_enabled || voice_prompt_id.is_some();
+
+    if should_post_process {
+        if let Some(processed_text) = post_process_transcription(&settings, &final_text, voice_prompt_id.clone()).await {
             post_processed_text = Some(processed_text.clone());
             final_text = processed_text;
 
-            if let Some(prompt_id) = &settings.post_process_selected_prompt_id {
+            // Use the voice-selected prompt or the default selected prompt
+            let prompt_id = voice_prompt_id
+                .or_else(|| settings.post_process_selected_prompt_id.clone());
+            
+            if let Some(pid) = prompt_id {
                 if let Some(prompt) = settings
                     .post_process_prompts
                     .iter()
-                    .find(|prompt| &prompt.id == prompt_id)
+                    .find(|prompt| prompt.id == pid)
                 {
                     post_process_prompt = Some(prompt.prompt.clone());
                 }

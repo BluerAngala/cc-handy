@@ -425,7 +425,17 @@
         "createPrompt": "Create Prompt",
         "cancel": "Cancel",
         "selectToEdit": "Select a prompt above to view and edit its details.",
-        "createFirst": "Click 'Create New Prompt' above to create your first post-processing prompt."
+        "createFirst": "Click 'Create New Prompt' above to create your first post-processing prompt.",
+        "builtin": {
+          "basicTextCorrection": "Basic Text Correction",
+          "deepPolish": "Deep Polish & Optimization",
+          "meetingMinutes": "Meeting Minutes",
+          "ideaOrganization": "Idea Organization & Writing",
+          "keywordHighlight": "Keyword Highlight Mode",
+          "interviewTranscript": "Interview Transcript",
+          "academicDocument": "Academic/Technical Document",
+          "minimalCorrection": "Minimal Correction Mode"
+        }
       }
     },
     "history": {
