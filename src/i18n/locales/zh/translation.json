@@ -13,6 +13,7 @@
     "models": "模型",
     "advanced": "高级",
     "postProcessing": "后处理",
+    "experimental": "实验性",
     "history": "历史记录",
     "debug": "调试",
     "about": "关于"
@@ -436,6 +437,12 @@
       "retranscribeError": "重新转录失败。请重试。",
       "transcribing": "转录中...",
       "transcriptionFailed": "转录失败。您可以使用重试图标重新转录。"
+    },
+    "experimental": {
+      "title": "实验性",
+      "groups": {
+        "features": "实验性功能"
+      }
     },
     "debug": {
       "title": "调试",
