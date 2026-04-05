@@ -250,7 +250,8 @@
         "output": "输出",
         "transcription": "转录",
         "history": "历史",
-        "experimental": "实验性"
+        "experimental": "实验性",
+        "system": "系统"
       },
       "experimentalToggle": {
         "label": "实验性功能",

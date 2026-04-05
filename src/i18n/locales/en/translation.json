@@ -254,7 +254,8 @@
         "output": "Output",
         "transcription": "Transcription",
         "history": "History",
-        "experimental": "Experimental"
+        "experimental": "Experimental",
+        "system": "System"
       },
       "experimentalToggle": {
         "label": "Experimental Features",

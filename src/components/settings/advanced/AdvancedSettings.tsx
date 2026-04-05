@@ -14,6 +14,8 @@ import { AutoSubmit } from "../AutoSubmit";
 import { AppendTrailingSpace } from "../AppendTrailingSpace";
 import { HistoryLimit } from "../HistoryLimit";
 import { RecordingRetentionPeriodSelector } from "../RecordingRetentionPeriod";
+import { KeyboardImplementationSelector } from "../debug/KeyboardImplementationSelector";
+import { AccelerationSelector } from "../AccelerationSelector";
 
 export const AdvancedSettings: React.FC = () => {
   const { t } = useTranslation();
@@ -46,6 +48,14 @@ export const AdvancedSettings: React.FC = () => {
           descriptionMode="tooltip"
           grouped={true}
         />
+      </SettingsGroup>
+
+      <SettingsGroup title={t("settings.advanced.groups.system")}>
+        <KeyboardImplementationSelector
+          descriptionMode="tooltip"
+          grouped={true}
+        />
+        <AccelerationSelector descriptionMode="tooltip" grouped={true} />
       </SettingsGroup>
     </div>
   );
