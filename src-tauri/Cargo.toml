@@ -1,11 +1,11 @@
 [package]
-name = "handy"
-version = "0.8.2"
-description = "Handy"
-authors = ["cjpais"]
+name = "cc-handy"
+version = "1.0.0"
+description = "cc-handy"
+authors = ["BluerAngala"]
 edition = "2021"
 license = "MIT"
-default-run = "handy"
+default-run = "cc-handy"
 
 [profile.dev]
 incremental = true # Compile your binary in smaller steps.

@@ -32,12 +32,20 @@ pub enum EngineType {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Type, Default)]
 #[serde(default)]
+pub struct ModelFile {
+    pub url: String,
+    pub target_name: String, // e.g. "model.int8.onnx"
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Type, Default)]
+#[serde(default)]
 pub struct ModelInfo {
     pub id: String,
     pub name: String,
     pub description: String,
     pub filename: String,
     pub url: Option<String>,
+    pub files: Option<Vec<ModelFile>>, // For multi-file models (client-side assembly)
     pub sha256: Option<String>,
     pub size_mb: u64,
     pub is_downloaded: bool,
@@ -136,10 +144,9 @@ impl ModelManager {
                 name: "Whisper Small".to_string(),
                 description: "Fast and fairly accurate.".to_string(),
                 filename: "ggml-small.bin".to_string(),
-                url: Some("https://blob.handy.computer/ggml-small.bin".to_string()),
-                sha256: Some(
-                    "1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b".to_string(),
-                ),
+                url: Some("https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-small.bin".to_string()),
+                files: None,
+                sha256: None,
                 size_mb: 465,
                 is_downloaded: false,
                 is_downloading: false,
@@ -167,11 +174,10 @@ impl ModelManager {
                 id: "medium".to_string(),
                 name: "Whisper Medium".to_string(),
                 description: "Good accuracy, medium speed".to_string(),
-                filename: "whisper-medium-q4_1.bin".to_string(),
-                url: Some("https://blob.handy.computer/whisper-medium-q4_1.bin".to_string()),
-                sha256: Some(
-                    "79283fc1f9fe12ca3248543fbd54b73292164d8df5a16e095e2bceeaaabddf57".to_string(),
-                ),
+                filename: "ggml-medium.bin".to_string(),
+                url: Some("https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-medium.bin".to_string()),
+                files: None,
+                sha256: None,
                 size_mb: 469,
                 is_downloaded: false,
                 is_downloading: false,
@@ -199,10 +205,9 @@ impl ModelManager {
                 name: "Whisper Turbo".to_string(),
                 description: "Balanced accuracy and speed.".to_string(),
                 filename: "ggml-large-v3-turbo.bin".to_string(),
-                url: Some("https://blob.handy.computer/ggml-large-v3-turbo.bin".to_string()),
-                sha256: Some(
-                    "1fc70f774d38eb169993ac391eea357ef47c88757ef72ee5943879b7e8e2bc69".to_string(),
-                ),
+                url: Some("https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin".to_string()),
+                files: None,
+                sha256: None,
                 size_mb: 1549,
                 is_downloaded: false,
                 is_downloading: false,
@@ -230,10 +235,9 @@ impl ModelManager {
                 name: "Whisper Large".to_string(),
                 description: "Good accuracy, but slow.".to_string(),
                 filename: "ggml-large-v3-q5_0.bin".to_string(),
-                url: Some("https://blob.handy.computer/ggml-large-v3-q5_0.bin".to_string()),
-                sha256: Some(
-                    "d75795ecff3f83b5faa89d1900604ad8c780abd5739fae406de19f23ecd98ad1".to_string(),
-                ),
+                url: Some("https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-q5_0.bin".to_string()),
+                files: None,
+                sha256: None,
                 size_mb: 1031,
                 is_downloaded: false,
                 is_downloading: false,
@@ -263,6 +267,7 @@ impl ModelManager {
                     .to_string(),
                 filename: "breeze-asr-q5_k.bin".to_string(),
                 url: Some("https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-breeze-asr-q5_k.bin".to_string()),
+                files: None,
                 sha256: None, // Disabling checksum temporarily for direct HF mirrors
                 size_mb: 1030,
                 is_downloaded: false,
@@ -294,6 +299,7 @@ impl ModelManager {
                     .to_string(),
                 filename: "ggml-belle-large-v3-zh-q5_0.bin".to_string(),
                 url: Some("https://hf-mirror.com/BELLE-2/Belle-whisper-large-v3-zh-ggml/resolve/main/ggml-model-q5_0.bin".to_string()),
+                files: None,
                 sha256: None,
                 size_mb: 1080,
                 is_downloaded: false,
@@ -324,6 +330,7 @@ impl ModelManager {
                 description: "English only. The best model for English speakers.".to_string(),
                 filename: "parakeet-tdt-0.6b-v2-int8".to_string(), // Directory name
                 url: Some("https://blob.handy.computer/parakeet-v2-int8.tar.gz".to_string()),
+                files: None,
                 sha256: Some(
                     "ac9b9429984dd565b25097337a887bb7f0f8ac393573661c651f0e7d31563991".to_string(),
                 ),
@@ -365,6 +372,7 @@ impl ModelManager {
                 description: "Fast and accurate. Supports 25 European languages.".to_string(),
                 filename: "parakeet-tdt-0.6b-v3-int8".to_string(), // Directory name
                 url: Some("https://blob.handy.computer/parakeet-v3-int8.tar.gz".to_string()),
+                files: None,
                 sha256: Some(
                     "43d37191602727524a7d8c6da0eef11c4ba24320f5b4730f1a2497befc2efa77".to_string(),
                 ),
@@ -396,6 +404,7 @@ impl ModelManager {
                 description: "Very fast, English only. Handles accents well.".to_string(),
                 filename: "moonshine-base".to_string(),
                 url: Some("https://blob.handy.computer/moonshine-base.tar.gz".to_string()),
+                files: None,
                 sha256: Some(
                     "04bf6ab012cfceebd4ac7cf88c1b31d027bbdd3cd704649b692e2e935236b7e8".to_string(),
                 ),
@@ -429,6 +438,7 @@ impl ModelManager {
                 url: Some(
                     "https://blob.handy.computer/moonshine-tiny-streaming-en.tar.gz".to_string(),
                 ),
+                files: None,
                 sha256: Some(
                     "465addcfca9e86117415677dfdc98b21edc53537210333a3ecdb58509a80abaf".to_string(),
                 ),
@@ -462,6 +472,7 @@ impl ModelManager {
                 url: Some(
                     "https://blob.handy.computer/moonshine-small-streaming-en.tar.gz".to_string(),
                 ),
+                files: None,
                 sha256: Some(
                     "dbb3e1c1832bd88a4ac712f7449a136cc2c9a18c5fe33a12ed1b7cb1cfe9cdd5".to_string(),
                 ),
@@ -495,6 +506,7 @@ impl ModelManager {
                 url: Some(
                     "https://blob.handy.computer/moonshine-medium-streaming-en.tar.gz".to_string(),
                 ),
+                files: None,
                 sha256: Some(
                     "07a66f3bff1c77e75a2f637e5a263928a08baae3c29c4c053fc968a9a9373d13".to_string(),
                 ),
@@ -533,7 +545,17 @@ impl ModelManager {
                 description: "Very fast. Chinese, English, Japanese, Korean, Cantonese."
                     .to_string(),
                 filename: "sense-voice-int8".to_string(),
-                url: Some("https://hf-mirror.com/cjpais/sense-voice-int8/resolve/main/sense-voice-int8.tar.gz".to_string()),
+                url: None,
+                files: Some(vec![
+                    ModelFile {
+                        url: "https://hf-mirror.com/lovemefan/SenseVoice-onnx/resolve/main/sense-voice-encoder-int8.onnx".to_string(),
+                        target_name: "model.int8.onnx".to_string(),
+                    },
+                    ModelFile {
+                        url: "https://hf-mirror.com/lovemefan/SenseVoice-onnx/resolve/main/chn_jpn_yue_eng_ko_spectok.bpe.model".to_string(),
+                        target_name: "tokens.txt".to_string(),
+                    },
+                ]),
                 sha256: None,
                 size_mb: 152,
                 is_downloaded: false,
@@ -566,6 +588,7 @@ impl ModelManager {
                 description: "Russian speech recognition. Fast and accurate.".to_string(),
                 filename: "giga-am-v3-int8".to_string(),
                 url: Some("https://blob.handy.computer/giga-am-v3-int8.tar.gz".to_string()),
+                files: None,
                 sha256: Some(
                     "d872462268430db140b69b72e0fc4b787b194c1dbe51b58de39444d55b6da45b".to_string(),
                 ),
@@ -604,6 +627,7 @@ impl ModelManager {
                     .to_string(),
                 filename: "canary-180m-flash".to_string(),
                 url: Some("https://blob.handy.computer/canary-180m-flash.tar.gz".to_string()),
+                files: None,
                 sha256: Some(
                     "6d9cfca6118b296e196eaedc1c8fa9788305a7b0f1feafdb6dc91932ab6e53f7".to_string(),
                 ),
@@ -645,6 +669,7 @@ impl ModelManager {
                     .to_string(),
                 filename: "canary-1b-v2".to_string(),
                 url: Some("https://blob.handy.computer/canary-1b-v2.tar.gz".to_string()),
+                files: None,
                 sha256: Some(
                     "02305b2a25f9cf3e7deaffa7f94df00efa44f442cd55c101c2cb9c000f904666".to_string(),
                 ),
@@ -684,6 +709,7 @@ impl ModelManager {
                 description: "A large, slower, but very accurate multilingual model.".to_string(),
                 filename: "cohere-int8".to_string(),
                 url: Some("https://blob.handy.computer/cohere-int8.tar.gz".to_string()),
+                files: None,
                 sha256: Some(
                     "ea2257d52434f3644574f187dcdcf666e302cd11b92866116ab8e14cd9c887f0".to_string(),
                 ),
@@ -869,6 +895,7 @@ impl ModelManager {
                     // Construct a generic HF mirror download URL. 
                     // Note: This is an approximation as we don't know the exact file name inside the repo.
                     url: Some(format!("https://hf-mirror.com/{}/resolve/main/ggml-model.bin", id)),
+                    files: None,
                     sha256: None,
                     size_mb: 0, // Placeholder for unknown size
                     is_downloaded: false,
@@ -1188,6 +1215,7 @@ impl ModelManager {
                     description: "Not officially supported".to_string(),
                     filename,
                     url: None,    // Custom models have no download URL
+                    files: None,
                     sha256: None, // Custom models skip verification
                     size_mb,
                     is_downloaded: true, // Already present on disk
@@ -1206,7 +1234,7 @@ impl ModelManager {
                 likes: None,
                 created_at: None,
                 trending_score: None,
-                },
+            },
             );
         }
 
@@ -1263,6 +1291,145 @@ impl ModelManager {
         Ok(format!("{:x}", hasher.finalize()))
     }
 
+    // Add multi-file download logic here
+    async fn download_multi_file_model(
+        &self,
+        model_id: &str,
+        model_info: &ModelInfo,
+        files: &[ModelFile],
+    ) -> Result<()> {
+        let model_dir = self.models_dir.join(&model_info.filename);
+        
+        // Ensure directory exists
+        if !model_dir.exists() {
+            fs::create_dir_all(&model_dir)?;
+        }
+        
+        let mut total_downloaded: u64 = 0;
+        let total_size: u64 = model_info.size_mb * 1024 * 1024; // Approximation for progress UI
+        
+        // Mark as downloading
+        {
+            let mut models = self.available_models.lock().unwrap();
+            if let Some(model) = models.get_mut(model_id) {
+                model.is_downloading = true;
+            }
+        }
+
+        let cancel_flag = Arc::new(AtomicBool::new(false));
+        {
+            let mut flags = self.cancel_flags.lock().unwrap();
+            flags.insert(model_id.to_string(), cancel_flag.clone());
+        }
+
+        let mut cleanup = DownloadCleanup {
+            available_models: &self.available_models,
+            cancel_flags: &self.cancel_flags,
+            model_id: model_id.to_string(),
+            disarmed: false,
+        };
+
+        let client = reqwest::Client::new();
+        
+        for file_info in files {
+            let target_path = model_dir.join(&file_info.target_name);
+            let partial_path = model_dir.join(format!("{}.partial", &file_info.target_name));
+            
+            // Skip if file already exists completely
+            if target_path.exists() {
+                // Approximate existing size for overall progress
+                total_downloaded += target_path.metadata().map(|m| m.len()).unwrap_or(0);
+                continue;
+            }
+            
+            let mut resume_from = if partial_path.exists() {
+                partial_path.metadata().map(|m| m.len()).unwrap_or(0)
+            } else {
+                0
+            };
+            
+            let mut request = client.get(&file_info.url);
+            if resume_from > 0 {
+                request = request.header("Range", format!("bytes={}-", resume_from));
+            }
+            
+            let mut response = request.send().await?;
+            
+            if resume_from > 0 && response.status() == reqwest::StatusCode::OK {
+                let _ = fs::remove_file(&partial_path);
+                resume_from = 0;
+                response = client.get(&file_info.url).send().await?;
+            }
+            
+            if !response.status().is_success() && response.status() != reqwest::StatusCode::PARTIAL_CONTENT {
+                return Err(anyhow::anyhow!("Failed to download {}: HTTP {}", file_info.target_name, response.status()));
+            }
+            
+            let mut file = if resume_from > 0 {
+                std::fs::OpenOptions::new().create(true).append(true).open(&partial_path)?
+            } else {
+                std::fs::File::create(&partial_path)?
+            };
+            
+            let mut stream = response.bytes_stream();
+            let mut last_emit = Instant::now();
+            let throttle_duration = Duration::from_millis(100);
+            
+            while let Some(chunk) = stream.next().await {
+                if cancel_flag.load(Ordering::Relaxed) {
+                    return Ok(());
+                }
+                
+                let chunk = chunk?;
+                file.write_all(&chunk)?;
+                total_downloaded += chunk.len() as u64;
+                
+                if last_emit.elapsed() >= throttle_duration {
+                    let percentage = if total_size > 0 {
+                        (total_downloaded as f64 / total_size as f64) * 100.0
+                    } else {
+                        0.0
+                    };
+                    
+                    let progress = DownloadProgress {
+                        model_id: model_id.to_string(),
+                        downloaded: total_downloaded,
+                        total: total_size,
+                        percentage: percentage.min(99.9), // Keep it under 100 until fully done
+                    };
+                    let _ = self.app_handle.emit("model-download-progress", &progress);
+                    last_emit = Instant::now();
+                }
+            }
+            
+            file.flush()?;
+            drop(file);
+            fs::rename(&partial_path, &target_path)?;
+        }
+        
+        cleanup.disarmed = true;
+        {
+            let mut models = self.available_models.lock().unwrap();
+            if let Some(model) = models.get_mut(model_id) {
+                model.is_downloading = false;
+                model.is_downloaded = true;
+                model.partial_size = 0;
+            }
+        }
+        self.cancel_flags.lock().unwrap().remove(model_id);
+        
+        let final_progress = DownloadProgress {
+            model_id: model_id.to_string(),
+            downloaded: total_size,
+            total: total_size,
+            percentage: 100.0,
+        };
+        let _ = self.app_handle.emit("model-download-progress", &final_progress);
+        let _ = self.app_handle.emit("model-download-complete", model_id);
+        
+        Ok(())
+    }
+
     pub async fn download_model(&self, model_id: &str) -> Result<()> {
         let model_info = {
             let models = self.available_models.lock().unwrap();
@@ -1271,6 +1438,11 @@ impl ModelManager {
 
         let model_info =
             model_info.ok_or_else(|| anyhow::anyhow!("Model not found: {}", model_id))?;
+
+        // Support for multi-file models (e.g. SenseVoice from HF)
+        if let Some(files) = &model_info.files {
+            return self.download_multi_file_model(model_id, &model_info, files).await;
+        }
 
         let url = model_info
             .url
@@ -1487,7 +1659,7 @@ impl ModelManager {
             .emit("model-verification-completed", model_id);
 
         // Handle directory-based models (extract tar.gz) vs file-based models
-        if model_info.is_directory {
+        if model_info.is_directory && model_info.files.is_none() {
             // Track that this model is being extracted
             {
                 let mut extracting = self.extracting_models.lock().unwrap();

@@ -1,7 +1,8 @@
 {
-  "name": "handy-app",
+  "name": "cc-handy-app",
   "private": true,
-  "version": "0.8.2",
+  "version": "1.0.0",
+  "author": "BluerAngala",
   "type": "module",
   "scripts": {
     "dev": "vite",

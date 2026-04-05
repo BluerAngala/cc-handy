@@ -1,8 +1,8 @@
-# Handy (二次开发版)
+# cc-handy (二次开发版)
 
 本项目基于 [cjpais/Handy](https://github.com/cjpais/Handy) 项目进行二次开发。
 
-Handy 是一款跨平台的桌面级语音转文本（Speech-to-Text）应用程序，基于 Tauri 构建，采用 Rust 处理高性能后端计算，React/TypeScript 构建现代化前端界面。
+cc-handy 是一款跨平台的桌面级语音转文本（Speech-to-Text）应用程序，基于 Tauri 构建，采用 Rust 处理高性能后端计算，React/TypeScript 构建现代化前端界面。
 
 ## ✨ 主要功能
 
@@ -43,7 +43,7 @@ Handy 是一款跨平台的桌面级语音转文本（Speech-to-Text）应用程
 2. **准备基础 VAD 模型（开发环境必须）**
    ```bash
    mkdir -p src-tauri/resources/models
-   curl -o src-tauri/resources/models/silero_vad_v4.onnx https://blob.handy.computer/silero_vad_v4.onnx
+   curl -o src-tauri/resources/models/silero_vad_v4.onnx https://hf-mirror.com/wongeuler/silero-vad/resolve/main/silero_vad_v4.onnx
    ```
 
 3. **启动开发服务器**
@@ -69,7 +69,7 @@ bun run preview    # 预览构建的前端产物
 
 ## 🏗️ 架构概览
 
-Handy 核心采用了 **Manager Pattern（管理器模式）** 和 **Pipeline Processing（流水线处理）**：
+cc-handy 核心采用了 **Manager Pattern（管理器模式）** 和 **Pipeline Processing（流水线处理）**：
 
 1. **音频捕获 (Audio Manager)**：监听系统麦克风。
 2. **语音活动检测 (VAD Pipeline)**：Silero VAD 识别有效人声片段。

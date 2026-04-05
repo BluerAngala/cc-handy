@@ -29,7 +29,7 @@ bun run format:check      # Check formatting without changes
 
 ```bash
 mkdir -p src-tauri/resources/models
-curl -o src-tauri/resources/models/silero_vad_v4.onnx https://blob.handy.computer/silero_vad_v4.onnx
+curl -o src-tauri/resources/models/silero_vad_v4.onnx https://hf-mirror.com/wongeuler/silero-vad/resolve/main/silero_vad_v4.onnx
 ```
 
 ## Architecture Overview
