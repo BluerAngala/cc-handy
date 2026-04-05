@@ -181,7 +181,7 @@ impl Default for KeyboardImplementation {
 
 impl Default for ModelUnloadTimeout {
     fn default() -> Self {
-        ModelUnloadTimeout::Min5
+        ModelUnloadTimeout::Min2
     }
 }
 
@@ -197,7 +197,7 @@ impl Default for PasteMethod {
 
 impl Default for ClipboardHandling {
     fn default() -> Self {
-        ClipboardHandling::DontModify
+        ClipboardHandling::CopyToClipboard
     }
 }
 
@@ -495,11 +495,11 @@ fn default_auto_submit() -> bool {
 }
 
 fn default_history_limit() -> usize {
-    5
+    30
 }
 
 fn default_recording_retention_period() -> RecordingRetentionPeriod {
-    RecordingRetentionPeriod::PreserveLimit
+    RecordingRetentionPeriod::Days3
 }
 
 fn default_audio_feedback_volume() -> f32 {
@@ -713,7 +713,7 @@ pub fn get_default_settings() -> AppSettings {
     #[cfg(target_os = "windows")]
     let default_shortcut = "ctrl+space";
     #[cfg(target_os = "macos")]
-    let default_shortcut = "option+space";
+    let default_shortcut = "command_right";
     #[cfg(target_os = "linux")]
     let default_shortcut = "ctrl+space";
     #[cfg(not(any(target_os = "windows", target_os = "macos", target_os = "linux")))]
@@ -733,7 +733,7 @@ pub fn get_default_settings() -> AppSettings {
     #[cfg(target_os = "windows")]
     let default_post_process_shortcut = "ctrl+shift+space";
     #[cfg(target_os = "macos")]
-    let default_post_process_shortcut = "option+shift+space";
+    let default_post_process_shortcut = "command_right+shift";
     #[cfg(target_os = "linux")]
     let default_post_process_shortcut = "ctrl+shift+space";
     #[cfg(not(any(target_os = "windows", target_os = "macos", target_os = "linux")))]
@@ -764,7 +764,7 @@ pub fn get_default_settings() -> AppSettings {
     AppSettings {
         bindings,
         push_to_talk: true,
-        audio_feedback: false,
+        audio_feedback: true,
         audio_feedback_volume: default_audio_feedback_volume(),
         sound_theme: default_sound_theme(),
         start_hidden: default_start_hidden(),

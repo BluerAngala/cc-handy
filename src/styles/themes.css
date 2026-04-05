@@ -60,7 +60,7 @@
   --color-bg-secondary: #f8fafc;
   --color-bg-tertiary: #f1f5f9;
   --color-bg-elevated: #ffffff;
-  --color-bg-overlay: rgba(0, 0, 0, 0.5);
+  --color-bg-overlay: rgba(0, 0, 0, 0.75);
 
   /* Text Colors */
   --color-text-primary: #0f172a;
