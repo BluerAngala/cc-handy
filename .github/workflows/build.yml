@@ -315,6 +315,21 @@ jobs:
             '.bundle.macOS.frameworks = [$lib]' \
             src-tauri/tauri.conf.json > tmp.json && mv tmp.json src-tauri/tauri.conf.json
 
+      - name: Install ONNX Runtime (aarch64 macOS)
+        if: inputs.target == 'aarch64-apple-darwin'
+        shell: bash
+        run: |
+          ORT_VERSION="1.24.2"
+          curl -L -o ort.tgz "https://github.com/microsoft/onnxruntime/releases/download/v${ORT_VERSION}/onnxruntime-osx-arm64-${ORT_VERSION}.tgz"
+          tar xzf ort.tgz
+          ORT_DIR="$(pwd)/onnxruntime-osx-arm64-${ORT_VERSION}"
+          echo "ORT_LIB_LOCATION=$ORT_DIR/lib" >> $GITHUB_ENV
+          echo "ORT_PREFER_DYNAMIC_LINK=1" >> $GITHUB_ENV
+          # Bundle the versioned dylib
+          jq --arg lib "$ORT_DIR/lib/libonnxruntime.${ORT_VERSION}.dylib" \
+            '.bundle.macOS.frameworks = [$lib]' \
+            src-tauri/tauri.conf.json > tmp.json && mv tmp.json src-tauri/tauri.conf.json
+
       - name: Install ONNX Runtime (x86_64 Linux, Ubuntu 22.04)
         if: contains(inputs.platform, 'ubuntu-22.04') && inputs.target == 'x86_64-unknown-linux-gnu'
         shell: bash
@@ -347,10 +362,10 @@ jobs:
           const fs = require('fs');
           const path = 'src-tauri/tauri.conf.json';
           const cfg = JSON.parse(fs.readFileSync(path, 'utf8'));
-          if (!process.env.TAURI_SIGNING_PRIVATE_KEY && cfg?.bundle?.createUpdaterArtifacts) {
+          if ((!process.env.TAURI_SIGNING_PRIVATE_KEY || ('${{ runner.os }}' === 'macOS' && '${{ inputs.sign-binaries }}' === 'false')) && cfg?.bundle?.createUpdaterArtifacts) {
             cfg.bundle.createUpdaterArtifacts = false;
             fs.writeFileSync(path, JSON.stringify(cfg, null, 2) + '\n');
-            console.log('Disabled bundle.createUpdaterArtifacts because TAURI_SIGNING_PRIVATE_KEY is not set.');
+            console.log('Disabled bundle.createUpdaterArtifacts because TAURI_SIGNING_PRIVATE_KEY is not set or macOS build is unsigned.');
           }
           NODE
 

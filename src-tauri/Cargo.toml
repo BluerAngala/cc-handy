@@ -1,6 +1,6 @@
 [package]
 name = "cc-handy"
-version = "1.0.1"
+version = "1.0.2"
 description = "cc-handy"
 authors = ["BluerAngala"]
 edition = "2021"
