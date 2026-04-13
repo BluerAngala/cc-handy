@@ -74,6 +74,7 @@ jobs:
       asset-prefix: "handy"
       upload-artifacts: false
       sign-binaries: false
+    secrets: inherit
 
   publish-release:
     needs: [create-release, build]
