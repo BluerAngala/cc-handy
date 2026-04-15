@@ -31,7 +31,9 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelProps> = ({
   };
 
   return (
-    <div className={`border border-mid-gray/20 rounded-lg overflow-hidden ${className}`}>
+    <div
+      className={`border border-mid-gray/20 rounded-lg overflow-hidden ${className}`}
+    >
       <button
         type="button"
         onClick={handleToggle}
@@ -46,7 +48,9 @@ export const CollapsiblePanel: React.FC<CollapsiblePanelProps> = ({
       </button>
       <div
         className={`transition-all duration-200 ease-in-out ${
-          isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+          isExpanded
+            ? "max-h-[2000px] opacity-100"
+            : "max-h-0 opacity-0 overflow-hidden"
         }`}
       >
         <div className="border-t border-mid-gray/20">{children}</div>

@@ -157,16 +157,25 @@ const PostProcessingSettingsPromptsComponent: React.FC = () => {
     prompts.find((prompt) => prompt.id === selectedPromptId) || null;
 
   // Get display name for a prompt - use i18n for builtin prompts, otherwise use the stored name
-  const getPromptDisplayName = (prompt: { id: string; name: string }): string => {
+  const getPromptDisplayName = (prompt: {
+    id: string;
+    name: string;
+  }): string => {
     const builtinKeys: Record<string, string> = {
-      basic_text_correction: "settings.postProcessing.prompts.builtin.basicTextCorrection",
+      basic_text_correction:
+        "settings.postProcessing.prompts.builtin.basicTextCorrection",
       deep_polish: "settings.postProcessing.prompts.builtin.deepPolish",
       meeting_minutes: "settings.postProcessing.prompts.builtin.meetingMinutes",
-      idea_organization: "settings.postProcessing.prompts.builtin.ideaOrganization",
-      keyword_highlight: "settings.postProcessing.prompts.builtin.keywordHighlight",
-      interview_transcript: "settings.postProcessing.prompts.builtin.interviewTranscript",
-      academic_document: "settings.postProcessing.prompts.builtin.academicDocument",
-      minimal_correction: "settings.postProcessing.prompts.builtin.minimalCorrection",
+      idea_organization:
+        "settings.postProcessing.prompts.builtin.ideaOrganization",
+      keyword_highlight:
+        "settings.postProcessing.prompts.builtin.keywordHighlight",
+      interview_transcript:
+        "settings.postProcessing.prompts.builtin.interviewTranscript",
+      academic_document:
+        "settings.postProcessing.prompts.builtin.academicDocument",
+      minimal_correction:
+        "settings.postProcessing.prompts.builtin.minimalCorrection",
     };
 
     const i18nKey = builtinKeys[prompt.id];
@@ -192,11 +201,7 @@ const PostProcessingSettingsPromptsComponent: React.FC = () => {
       setDraftName("");
       setDraftText("");
     }
-  }, [
-    isCreating,
-    selectedPromptId,
-    selectedPrompt,
-  ]);
+  }, [isCreating, selectedPromptId, selectedPrompt]);
 
   const handlePromptSelect = (promptId: string | null) => {
     if (!promptId) return;

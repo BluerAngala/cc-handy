@@ -120,7 +120,10 @@ export const useModelStore = create<ModelsStore>()(
 
     fetchLatestMarket: async (sort?: string, limit?: number) => {
       try {
-        const result = await commands.fetchLatestMarket(sort ?? null, limit ?? null);
+        const result = await commands.fetchLatestMarket(
+          sort ?? null,
+          limit ?? null,
+        );
         if (result.status === "ok") {
           set({ models: result.data, error: null });
         } else {

@@ -213,7 +213,13 @@ export const ModelsSettings: React.FC = () => {
       downloadedModels: downloaded,
       availableModels: available,
     };
-  }, [filteredModels, downloadingModels, extractingModels, currentModel, marketSort]);
+  }, [
+    filteredModels,
+    downloadingModels,
+    extractingModels,
+    currentModel,
+    marketSort,
+  ]);
 
   if (loading) {
     return (
@@ -374,10 +380,18 @@ export const ModelsSettings: React.FC = () => {
                     }}
                     className="bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-text/80 outline-none focus:border-logo-primary"
                   >
-                    <option value="trendingScore">最热门 (Trending)</option>
-                    <option value="downloads">最多下载 (Downloads)</option>
-                    <option value="createdAt">最新发布 (Newest)</option>
-                    <option value="likes">最多点赞 (Likes)</option>
+                    <option value="trendingScore">
+                      {t("settings.models.market.sort.trending")}
+                    </option>
+                    <option value="downloads">
+                      {t("settings.models.market.sort.downloads")}
+                    </option>
+                    <option value="createdAt">
+                      {t("settings.models.market.sort.newest")}
+                    </option>
+                    <option value="likes">
+                      {t("settings.models.market.sort.likes")}
+                    </option>
                   </select>
                   <select
                     value={marketLimit}
@@ -409,8 +423,10 @@ export const ModelsSettings: React.FC = () => {
                     disabled={isFetchingMarket}
                     className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-text/60 hover:text-text bg-white/5 hover:bg-white/10 border border-white/5 rounded-md transition-colors"
                   >
-                    <RefreshCcw className={`w-3.5 h-3.5 ${isFetchingMarket ? 'animate-spin' : ''}`} />
-                    Refresh Market
+                    <RefreshCcw
+                      className={`w-3.5 h-3.5 ${isFetchingMarket ? "animate-spin" : ""}`}
+                    />
+                    {t("settings.models.market.refresh")}
                   </button>
                 </div>
               </div>

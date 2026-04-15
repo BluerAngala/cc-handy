@@ -23,7 +23,9 @@ enum Command {
         recording_was_active: bool,
     },
     ProcessingFinished,
-    LongPressDetected { binding_id: String }, // 长按检测到的命令
+    LongPressDetected {
+        binding_id: String,
+    }, // 长按检测到的命令
 }
 
 /// Pipeline lifecycle, owned exclusively by the coordinator thread.
@@ -90,7 +92,7 @@ impl TranscriptionCoordinator {
                                     // 记录按下时间
                                     _press_start_time = Some(Instant::now());
                                     pending_binding_id = Some(binding_id.clone());
-                                    
+
                                     // 启动长按检测定时器
                                     let tx_timer = tx_clone.clone();
                                     let binding_id_timer = binding_id.clone();
@@ -100,22 +102,24 @@ impl TranscriptionCoordinator {
                                             binding_id: binding_id_timer,
                                         });
                                     }));
-                                    
-                                    debug!("Push-to-talk: waiting for long press on '{binding_id}'");
+
+                                    debug!(
+                                        "Push-to-talk: waiting for long press on '{binding_id}'"
+                                    );
                                 } else if !is_pressed {
                                     // 释放按键
-                                    
+
                                     // 取消长按定时器
                                     if let Some(timer) = long_press_timer.take() {
                                         drop(timer);
                                     }
-                                    
+
                                     if matches!(&stage, Stage::Recording(id) if id == &binding_id) {
                                         // 如果正在录音，停止录音
                                         stop(&app, &mut stage, &binding_id, &hotkey_string);
                                     }
                                     // 短按不做任何操作
-                                    
+
                                     _press_start_time = None;
                                     pending_binding_id = None;
                                 }
@@ -135,8 +139,12 @@ impl TranscriptionCoordinator {
                         }
                         Command::LongPressDetected { binding_id } => {
                             // 长按检测触发，开始录音
-                            if matches!(stage, Stage::Idle) && pending_binding_id.as_ref() == Some(&binding_id) {
-                                debug!("Long press detected for '{binding_id}', starting recording");
+                            if matches!(stage, Stage::Idle)
+                                && pending_binding_id.as_ref() == Some(&binding_id)
+                            {
+                                debug!(
+                                    "Long press detected for '{binding_id}', starting recording"
+                                );
                                 start(&app, &mut stage, &binding_id, &binding_id);
                             }
                             long_press_timer = None;
@@ -176,8 +184,10 @@ impl TranscriptionCoordinator {
         push_to_talk: bool,
     ) {
         // 检测是否有其他修饰键（用于检测组合键）
-        let has_modifiers = hotkey_string.contains('+') && !hotkey_string.starts_with("command") && !hotkey_string.starts_with("cmd");
-        
+        let has_modifiers = hotkey_string.contains('+')
+            && !hotkey_string.starts_with("command")
+            && !hotkey_string.starts_with("cmd");
+
         if self
             .tx
             .send(Command::Input {

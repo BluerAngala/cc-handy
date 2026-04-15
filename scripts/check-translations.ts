@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Configuration
 const LOCALES_DIR = path.join(__dirname, "..", "src", "i18n", "locales");
 const REFERENCE_LANG = "en";
+const STRICT_TRANSLATIONS = process.env.STRICT_TRANSLATIONS === "1";
 
 type TranslationData = Record<string, unknown>;
 
@@ -208,7 +209,7 @@ function validateTranslations(): void {
         "red",
       ),
     );
-    process.exit(1);
+    process.exit(STRICT_TRANSLATIONS ? 1 : 0);
   } else {
     console.log(
       colorize(

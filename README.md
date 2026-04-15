@@ -30,26 +30,30 @@ cc-handy 是一款跨平台的桌面级语音转文本（Speech-to-Text）应用
 ## 🚀 开发指南
 
 ### 前置要求
+
 - [Rust](https://rustup.rs/) (最新稳定版)
 - [Bun](https://bun.sh/) 包管理器
 
 ### 快速开始
 
 1. **安装项目依赖**
+
    ```bash
    bun install
    ```
 
 2. **准备基础 VAD 模型（开发环境必须）**
+
    ```bash
    mkdir -p src-tauri/resources/models
    curl -o src-tauri/resources/models/silero_vad_v4.onnx https://hf-mirror.com/wongeuler/silero-vad/resolve/main/silero_vad_v4.onnx
    ```
 
 3. **启动开发服务器**
+
    ```bash
    bun run tauri dev
-   
+
    # 如果在 macOS 上遇到 cmake 错误，请使用以下命令：
    # CMAKE_POLICY_VERSION_MINIMUM=3.5 bun run tauri dev
    ```
@@ -60,7 +64,9 @@ cc-handy 是一款跨平台的桌面级语音转文本（Speech-to-Text）应用
    ```
 
 ### 独立前端开发
+
 如果你只希望修改界面 UI，可以单独运行前端构建流：
+
 ```bash
 bun run dev        # 启动 Vite 开发服务器
 bun run build      # 仅构建前端
@@ -78,4 +84,5 @@ cc-handy 核心采用了 **Manager Pattern（管理器模式）** 和 **Pipeline
 5. **剪贴板注入**：后端自动模拟键盘/剪贴板操作，将结果上屏至任意活跃窗口。
 
 ---
-*本项目采用 MIT 协议开源。*
+
+_本项目采用 MIT 协议开源。_

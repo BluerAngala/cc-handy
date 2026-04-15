@@ -35,8 +35,10 @@ export default {
         "interactive-primary-hover": "var(--color-interactive-primary-hover)",
         "interactive-primary-active": "var(--color-interactive-primary-active)",
         "interactive-secondary": "var(--color-interactive-secondary)",
-        "interactive-secondary-hover": "var(--color-interactive-secondary-hover)",
-        "interactive-secondary-active": "var(--color-interactive-secondary-active)",
+        "interactive-secondary-hover":
+          "var(--color-interactive-secondary-hover)",
+        "interactive-secondary-active":
+          "var(--color-interactive-secondary-active)",
 
         // New theme system - Accents
         "accent-purple": "var(--color-accent-purple)",
@@ -99,12 +101,15 @@ export default {
         },
       },
       backgroundImage: {
-        "gradient-primary": "linear-gradient(135deg, var(--color-accent-gradient-start), var(--color-accent-gradient-end))",
+        "gradient-primary":
+          "linear-gradient(135deg, var(--color-accent-gradient-start), var(--color-accent-gradient-end))",
       },
       boxShadow: {
-        "focus": "0 0 0 3px color-mix(in srgb, var(--color-border-focus), transparent 80%)",
-        "card": "0 4px 6px -1px color-mix(in srgb, var(--color-text-primary), transparent 90%)",
-        "card-hover": "0 10px 15px -3px color-mix(in srgb, var(--color-text-primary), transparent 85%)",
+        focus:
+          "0 0 0 3px color-mix(in srgb, var(--color-border-focus), transparent 80%)",
+        card: "0 4px 6px -1px color-mix(in srgb, var(--color-text-primary), transparent 90%)",
+        "card-hover":
+          "0 10px 15px -3px color-mix(in srgb, var(--color-text-primary), transparent 85%)",
       },
       animation: {
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",

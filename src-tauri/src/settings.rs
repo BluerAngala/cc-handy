@@ -9,11 +9,10 @@ use tauri_plugin_store::StoreExt;
 
 // Re-export post-processing types and functions
 pub use crate::post_process_settings::{
-    default_post_process_api_keys, default_post_process_enabled,
-    default_post_process_models, default_post_process_prompts, default_post_process_provider_id,
-    default_post_process_providers, ensure_post_process_defaults, get_default_post_process_shortcut,
-    PostProcessProvider, LLMPrompt,
-    APPLE_INTELLIGENCE_PROVIDER_ID, APPLE_INTELLIGENCE_DEFAULT_MODEL_ID,
+    default_post_process_api_keys, default_post_process_enabled, default_post_process_models,
+    default_post_process_prompts, default_post_process_provider_id, default_post_process_providers,
+    ensure_post_process_defaults, get_default_post_process_shortcut, LLMPrompt,
+    PostProcessProvider, APPLE_INTELLIGENCE_DEFAULT_MODEL_ID, APPLE_INTELLIGENCE_PROVIDER_ID,
 };
 
 #[derive(Serialize, Debug, Clone, Copy, PartialEq, Eq, Type)]

@@ -140,7 +140,13 @@ export const usePostProcessProviderState = (): PostProcessProviderState => {
         }
       }
     },
-    [apiKey, selectedProviderId, updatePostProcessApiKey, fetchPostProcessModels, isAppleProvider],
+    [
+      apiKey,
+      selectedProviderId,
+      updatePostProcessApiKey,
+      fetchPostProcessModels,
+      isAppleProvider,
+    ],
   );
 
   const handleModelChange = useCallback(

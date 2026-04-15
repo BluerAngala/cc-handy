@@ -38,7 +38,11 @@
   -webkit-text-size-adjust: 100%;
 
   /* Scrollbar colors */
-  --scrollbar-thumb: color-mix(in srgb, var(--color-text-primary), transparent 85%);
+  --scrollbar-thumb: color-mix(
+    in srgb,
+    var(--color-text-primary),
+    transparent 85%
+  );
   --scrollbar-thumb-hover: color-mix(
     in srgb,
     var(--color-text-primary),
@@ -95,11 +99,19 @@
 
   /* Gradient utilities */
   .gradient-primary {
-    background: linear-gradient(135deg, var(--color-accent-gradient-start), var(--color-accent-gradient-end));
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-gradient-start),
+      var(--color-accent-gradient-end)
+    );
   }
 
   .gradient-text {
-    background: linear-gradient(135deg, var(--color-accent-gradient-start), var(--color-accent-gradient-end));
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-gradient-start),
+      var(--color-accent-gradient-end)
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -171,7 +183,8 @@
 
 .card-hover:hover {
   border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-border-focus), transparent 80%);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-border-focus), transparent 80%);
 }
 
 /* Input styles */
@@ -184,7 +197,8 @@
 .input:focus {
   border-color: var(--color-border-focus);
   outline: none;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-border-focus), transparent 80%);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-border-focus), transparent 80%);
 }
 
 .input::placeholder {

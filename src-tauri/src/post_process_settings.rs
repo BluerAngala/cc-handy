@@ -8,77 +8,101 @@ use crate::settings::AppSettings;
 /// Maps prompt IDs to their voice command keywords
 pub fn get_prompt_voice_commands() -> HashMap<String, Vec<String>> {
     let mut map = HashMap::new();
-    
+
     // 基础文字纠错
-    map.insert("basic_text_correction".to_string(), vec![
-        "基础纠错".to_string(),
-        "文字纠错".to_string(),
-        "基础模式".to_string(),
-        "basic correction".to_string(),
-    ]);
-    
+    map.insert(
+        "basic_text_correction".to_string(),
+        vec![
+            "基础纠错".to_string(),
+            "文字纠错".to_string(),
+            "基础模式".to_string(),
+            "basic correction".to_string(),
+        ],
+    );
+
     // 深度整理优化
-    map.insert("deep_polish".to_string(), vec![
-        "深度整理".to_string(),
-        "深度优化".to_string(),
-        "深度模式".to_string(),
-        "deep polish".to_string(),
-        "polish".to_string(),
-    ]);
-    
+    map.insert(
+        "deep_polish".to_string(),
+        vec![
+            "深度整理".to_string(),
+            "深度优化".to_string(),
+            "深度模式".to_string(),
+            "deep polish".to_string(),
+            "polish".to_string(),
+        ],
+    );
+
     // 会议记录整理
-    map.insert("meeting_minutes".to_string(), vec![
-        "会议记录".to_string(),
-        "会议纪要".to_string(),
-        "会议模式".to_string(),
-        "meeting minutes".to_string(),
-        "meeting".to_string(),
-    ]);
-    
+    map.insert(
+        "meeting_minutes".to_string(),
+        vec![
+            "会议记录".to_string(),
+            "会议纪要".to_string(),
+            "会议模式".to_string(),
+            "meeting minutes".to_string(),
+            "meeting".to_string(),
+        ],
+    );
+
     // 思路整理与写作
-    map.insert("idea_organization".to_string(), vec![
-        "思路整理".to_string(),
-        "写作辅助".to_string(),
-        "写作模式".to_string(),
-        "idea organization".to_string(),
-        "writing".to_string(),
-    ]);
-    
+    map.insert(
+        "idea_organization".to_string(),
+        vec![
+            "思路整理".to_string(),
+            "写作辅助".to_string(),
+            "写作模式".to_string(),
+            "idea organization".to_string(),
+            "writing".to_string(),
+        ],
+    );
+
     // 关键词标注模式
-    map.insert("keyword_highlight".to_string(), vec![
-        "关键词标注".to_string(),
-        "关键词模式".to_string(),
-        "标注模式".to_string(),
-        "keyword highlight".to_string(),
-        "highlight".to_string(),
-    ]);
-    
+    map.insert(
+        "keyword_highlight".to_string(),
+        vec![
+            "关键词标注".to_string(),
+            "关键词模式".to_string(),
+            "标注模式".to_string(),
+            "keyword highlight".to_string(),
+            "highlight".to_string(),
+        ],
+    );
+
     // 访谈采访整理
-    map.insert("interview_transcript".to_string(), vec![
-        "访谈整理".to_string(),
-        "采访记录".to_string(),
-        "访谈模式".to_string(),
-        "interview".to_string(),
-    ]);
-    
+    map.insert(
+        "interview_transcript".to_string(),
+        vec![
+            "访谈整理".to_string(),
+            "采访记录".to_string(),
+            "访谈模式".to_string(),
+            "interview".to_string(),
+        ],
+    );
+
     // 学术技术文档
-    map.insert("academic_document".to_string(), vec![
-        "学术文档".to_string(),
-        "技术文档".to_string(),
-        "学术模式".to_string(),
-        "academic".to_string(),
-        "technical".to_string(),
-    ]);
-    
+    map.insert(
+        "academic_document".to_string(),
+        vec![
+            "学术文档".to_string(),
+            "技术文档".to_string(),
+            "学术模式".to_string(),
+            "academic".to_string(),
+            "technical".to_string(),
+        ],
+    );
+
     // 简洁修正模式
-    map.insert("minimal_correction".to_string(), vec![
-        "简洁修正".to_string(),
-        "最小修正".to_string(),
-        "简洁模式".to_string(),
-        "minimal correction".to_string(),
-        "minimal".to_string(),
-    ]);
-    
+    map.insert(
+        "minimal_correction".to_string(),
+        vec![
+            "简洁修正".to_string(),
+            "最小修正".to_string(),
+            "简洁模式".to_string(),
+            "minimal correction".to_string(),
+            "minimal".to_string(),
+        ],
+    );
+
     map
 }
 
@@ -91,11 +115,11 @@ pub fn get_prompt_voice_commands() -> HashMap<String, Vec<String>> {
 pub fn detect_voice_command(transcription: &str) -> (String, Option<String>) {
     let commands = get_prompt_voice_commands();
     let text = transcription.trim();
-    
+
     // Pattern: "使用/切换到/用 + [command] + [模式/方式]"
     // Pattern: "[command] + [模式/方式]"
     // Pattern: "[command] + mode"
-    
+
     for (prompt_id, keywords) in &commands {
         for keyword in keywords {
             // Check various patterns
@@ -113,19 +137,23 @@ pub fn detect_voice_command(transcription: &str) -> (String, Option<String>) {
                 format!("switch to {}", keyword),
                 keyword.clone(),
             ];
-            
+
             for pattern in &patterns {
                 if text.contains(pattern) {
                     // Remove the command from text
                     let cleaned = text.replace(pattern, "").trim().to_string();
                     // Clean up any leftover punctuation or spaces
-                    let cleaned = cleaned.trim_start_matches(|c| c == '，' || c == ',' || c == '。' || c == '.' || c == ' ').to_string();
+                    let cleaned = cleaned
+                        .trim_start_matches(|c| {
+                            c == '，' || c == ',' || c == '。' || c == '.' || c == ' '
+                        })
+                        .to_string();
                     return (cleaned, Some(prompt_id.clone()));
                 }
             }
         }
     }
-    
+
     // No command detected
     (text.to_string(), None)
 }
@@ -332,7 +360,7 @@ pub fn default_post_process_prompts() -> Vec<LLMPrompt> {
 
 pub fn ensure_post_process_defaults(settings: &mut AppSettings) -> bool {
     let mut changed = false;
-    
+
     // Ensure default providers exist
     for provider in default_post_process_providers() {
         // Use match to do a single lookup - either sync existing or add new
@@ -388,7 +416,11 @@ pub fn ensure_post_process_defaults(settings: &mut AppSettings) -> bool {
     // Ensure default prompts exist (for users upgrading from older versions)
     let default_prompts = default_post_process_prompts();
     for default_prompt in default_prompts {
-        if !settings.post_process_prompts.iter().any(|p| p.id == default_prompt.id) {
+        if !settings
+            .post_process_prompts
+            .iter()
+            .any(|p| p.id == default_prompt.id)
+        {
             settings.post_process_prompts.push(default_prompt);
             changed = true;
         }

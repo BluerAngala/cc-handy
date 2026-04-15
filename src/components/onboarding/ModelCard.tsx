@@ -221,30 +221,43 @@ const ModelCard: React.FC<ModelCardProps> = ({
             <span>{t("modelSelector.capabilities.translate")}</span>
           </div>
         )}
-        
-        {model.trending_score !== null && model.trending_score !== undefined && (
-          <div className="flex items-center gap-1 text-xs text-text/50" title="Trending Score">
-            <Flame className="w-3.5 h-3.5" />
-            <span>{formatNumberK(model.trending_score)}</span>
-          </div>
-        )}
-        
+
+        {model.trending_score !== null &&
+          model.trending_score !== undefined && (
+            <div
+              className="flex items-center gap-1 text-xs text-text/50"
+              title="Trending Score"
+            >
+              <Flame className="w-3.5 h-3.5" />
+              <span>{formatNumberK(model.trending_score)}</span>
+            </div>
+          )}
+
         {model.downloads !== null && model.downloads !== undefined && (
-          <div className="flex items-center gap-1 text-xs text-text/50" title="Downloads">
+          <div
+            className="flex items-center gap-1 text-xs text-text/50"
+            title="Downloads"
+          >
             <Download className="w-3.5 h-3.5" />
             <span>{formatNumberK(model.downloads)}</span>
           </div>
         )}
-        
+
         {model.likes !== null && model.likes !== undefined && (
-          <div className="flex items-center gap-1 text-xs text-text/50" title="Likes">
+          <div
+            className="flex items-center gap-1 text-xs text-text/50"
+            title="Likes"
+          >
             <ThumbsUp className="w-3.5 h-3.5" />
             <span>{formatNumberK(model.likes)}</span>
           </div>
         )}
-        
+
         {model.created_at !== null && model.created_at !== undefined && (
-          <div className="flex items-center gap-1 text-xs text-text/50" title="Created At">
+          <div
+            className="flex items-center gap-1 text-xs text-text/50"
+            title="Created At"
+          >
             <Clock className="w-3.5 h-3.5" />
             <span>{new Date(model.created_at).toLocaleDateString()}</span>
           </div>

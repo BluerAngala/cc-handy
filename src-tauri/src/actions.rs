@@ -64,7 +64,11 @@ fn build_system_prompt(prompt_template: &str) -> String {
     prompt_template.replace("${output}", "").trim().to_string()
 }
 
-async fn post_process_transcription(settings: &AppSettings, transcription: &str, override_prompt_id: Option<String>) -> Option<String> {
+async fn post_process_transcription(
+    settings: &AppSettings,
+    transcription: &str,
+    override_prompt_id: Option<String>,
+) -> Option<String> {
     let provider = match settings.active_post_process_provider().cloned() {
         Some(provider) => provider,
         None => {
@@ -88,8 +92,8 @@ async fn post_process_transcription(settings: &AppSettings, transcription: &str,
     }
 
     // Use override prompt ID from voice command, or fall back to selected prompt
-    let selected_prompt_id = override_prompt_id
-        .or_else(|| settings.post_process_selected_prompt_id.clone())?;
+    let selected_prompt_id =
+        override_prompt_id.or_else(|| settings.post_process_selected_prompt_id.clone())?;
 
     let prompt = match settings
         .post_process_prompts
@@ -330,10 +334,13 @@ pub(crate) async fn process_transcription_output(
 
     // Detect voice command for dynamic prompt selection
     let (cleaned_text, voice_prompt_id) = detect_voice_command(&final_text);
-    
+
     // If voice command detected, use the cleaned text
     if voice_prompt_id.is_some() {
-        debug!("Voice command detected, using prompt: {:?}", voice_prompt_id);
+        debug!(
+            "Voice command detected, using prompt: {:?}",
+            voice_prompt_id
+        );
         final_text = cleaned_text;
     }
 
@@ -342,17 +349,20 @@ pub(crate) async fn process_transcription_output(
     }
 
     // Post-process if either: (1) explicitly requested via shortcut, (2) enabled in settings, or (3) voice command detected
-    let should_post_process = post_process || settings.post_process_enabled || voice_prompt_id.is_some();
+    let should_post_process =
+        post_process || settings.post_process_enabled || voice_prompt_id.is_some();
 
     if should_post_process {
-        if let Some(processed_text) = post_process_transcription(&settings, &final_text, voice_prompt_id.clone()).await {
+        if let Some(processed_text) =
+            post_process_transcription(&settings, &final_text, voice_prompt_id.clone()).await
+        {
             post_processed_text = Some(processed_text.clone());
             final_text = processed_text;
 
             // Use the voice-selected prompt or the default selected prompt
-            let prompt_id = voice_prompt_id
-                .or_else(|| settings.post_process_selected_prompt_id.clone());
-            
+            let prompt_id =
+                voice_prompt_id.or_else(|| settings.post_process_selected_prompt_id.clone());
+
             if let Some(pid) = prompt_id {
                 if let Some(prompt) = settings
                     .post_process_prompts

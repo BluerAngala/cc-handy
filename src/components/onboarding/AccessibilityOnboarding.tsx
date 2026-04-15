@@ -94,13 +94,13 @@ const AccessibilityOnboarding: React.FC<AccessibilityOnboardingProps> = ({
 
     const checkInitial = async () => {
       if (nextPlatform === "macos") {
-          try {
-            const [accessibilityGranted, microphoneGranted] = await Promise.all([
-              checkAccessibilityPermission(),
-              checkMicrophonePermission(),
-            ]);
+        try {
+          const [accessibilityGranted, microphoneGranted] = await Promise.all([
+            checkAccessibilityPermission(),
+            checkMicrophonePermission(),
+          ]);
 
-            // If accessibility is granted, initialize Enigo and shortcuts
+          // If accessibility is granted, initialize Enigo and shortcuts
           if (accessibilityGranted) {
             try {
               await Promise.all([

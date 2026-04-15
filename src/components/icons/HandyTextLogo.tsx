@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 const HandyTextLogo = ({
   width,
@@ -9,6 +10,7 @@ const HandyTextLogo = ({
   height?: number;
   className?: string;
 }) => {
+  const { t } = useTranslation();
   return (
     <svg
       width={width}
@@ -18,8 +20,15 @@ const HandyTextLogo = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <text x="10" y="75" fontFamily="-apple-system, sans-serif" fontSize="70" fontWeight="900" fill="currentColor">
-        cc-handy
+      <text
+        x="10"
+        y="75"
+        fontFamily="-apple-system, sans-serif"
+        fontSize="70"
+        fontWeight="900"
+        fill="currentColor"
+      >
+        {t("app.name")}
       </text>
     </svg>
   );

@@ -144,7 +144,10 @@ impl ModelManager {
                 name: "Whisper Small".to_string(),
                 description: "Fast and fairly accurate.".to_string(),
                 filename: "ggml-small.bin".to_string(),
-                url: Some("https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-small.bin".to_string()),
+                url: Some(
+                    "https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-small.bin"
+                        .to_string(),
+                ),
                 files: None,
                 sha256: None,
                 size_mb: 465,
@@ -175,7 +178,10 @@ impl ModelManager {
                 name: "Whisper Medium".to_string(),
                 description: "Good accuracy, medium speed".to_string(),
                 filename: "ggml-medium.bin".to_string(),
-                url: Some("https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-medium.bin".to_string()),
+                url: Some(
+                    "https://hf-mirror.com/ggerganov/whisper.cpp/resolve/main/ggml-medium.bin"
+                        .to_string(),
+                ),
                 files: None,
                 sha256: None,
                 size_mb: 469,
@@ -736,7 +742,10 @@ impl ModelManager {
         if market_json_path.exists() {
             if let Ok(content) = fs::read_to_string(&market_json_path) {
                 if let Ok(market_models) = serde_json::from_str::<Vec<ModelInfo>>(&content) {
-                    info!("Loaded {} models from local market.json", market_models.len());
+                    info!(
+                        "Loaded {} models from local market.json",
+                        market_models.len()
+                    );
                     for model in market_models {
                         available_models.insert(model.id.clone(), model);
                     }
@@ -783,30 +792,30 @@ impl ModelManager {
 
     pub async fn update_market_models(&self, url: &str) -> Result<()> {
         info!("Fetching market models from HF API: {}", url);
-        
+
         let client = reqwest::Client::builder()
             .timeout(std::time::Duration::from_secs(10))
             .build()?;
-            
+
         let response = client.get(url).send().await?.error_for_status()?;
         let content = response.text().await?;
-        
+
         // HF returns an array directly
         let hf_models: Vec<serde_json::Value> = serde_json::from_str(&content).map_err(|e| {
             log::error!("Failed to parse HF JSON: {}", e);
             e
         })?;
-        
+
         info!("Fetched {} models from HF market", hf_models.len());
-        
+
         let mut market_models = Vec::new();
-        
+
         for item in hf_models {
             if let Some(id) = item.get("id").and_then(|v| v.as_str()) {
                 // HF model id format is usually "author/model-name"
                 let safe_id = id.replace("/", "_");
                 let name = id.split('/').last().unwrap_or(id).to_string();
-                
+
                 // Determine engine type based on tags
                 let mut engine_type = EngineType::Whisper;
                 let mut supported_languages = Vec::new();
@@ -824,7 +833,7 @@ impl ModelManager {
                             } else if tag_lower.contains("cohere") {
                                 engine_type = EngineType::Cohere;
                             }
-                            
+
                             // Check for language tags (usually 2-letter codes)
                             if tag_str.len() == 2 {
                                 supported_languages.push(tag_str.to_string());
@@ -837,26 +846,35 @@ impl ModelManager {
                         }
                     }
                 }
-                
+
                 // Remove duplicates and sort
                 supported_languages.sort();
                 supported_languages.dedup();
-                
+
                 // If no languages found but it's an ASR model, assume it supports at least English
                 if supported_languages.is_empty() {
                     supported_languages = vec!["en".to_string()];
                 }
-                
+
                 let supports_translation = supported_languages.len() > 1;
-                
-                let downloads = item.get("downloads").and_then(|v| v.as_u64().or_else(|| v.as_f64().map(|f| f as u64)));
-                let likes = item.get("likes").and_then(|v| v.as_u64().or_else(|| v.as_f64().map(|f| f as u64)));
-                let created_at = item.get("createdAt").and_then(|v| v.as_str()).map(|s| s.to_string());
-                let trending_score = item.get("trendingScore").and_then(|v| v.as_u64().or_else(|| v.as_f64().map(|f| f as u64)));
-                
+
+                let downloads = item
+                    .get("downloads")
+                    .and_then(|v| v.as_u64().or_else(|| v.as_f64().map(|f| f as u64)));
+                let likes = item
+                    .get("likes")
+                    .and_then(|v| v.as_u64().or_else(|| v.as_f64().map(|f| f as u64)));
+                let created_at = item
+                    .get("createdAt")
+                    .and_then(|v| v.as_str())
+                    .map(|s| s.to_string());
+                let trending_score = item
+                    .get("trendingScore")
+                    .and_then(|v| v.as_u64().or_else(|| v.as_f64().map(|f| f as u64)));
+
                 let mut accuracy_score = 0.80;
                 let mut speed_score = 0.50;
-                
+
                 // Attempt to infer scores from tags/name
                 let name_lower = name.to_lowercase();
                 if name_lower.contains("turbo") {
@@ -877,19 +895,24 @@ impl ModelManager {
                 } else if engine_type == EngineType::SenseVoice {
                     accuracy_score = 0.90;
                     speed_score = 0.90;
-                } else if engine_type == EngineType::Moonshine || engine_type == EngineType::MoonshineStreaming {
+                } else if engine_type == EngineType::Moonshine
+                    || engine_type == EngineType::MoonshineStreaming
+                {
                     accuracy_score = 0.70;
                     speed_score = 0.90;
                 }
-                
+
                 market_models.push(ModelInfo {
                     id: safe_id.clone(),
                     name: format!("{} (HF)", name),
                     description: format!("From HuggingFace"),
                     filename: format!("{}.bin", safe_id),
-                    // Construct a generic HF mirror download URL. 
+                    // Construct a generic HF mirror download URL.
                     // Note: This is an approximation as we don't know the exact file name inside the repo.
-                    url: Some(format!("https://hf-mirror.com/{}/resolve/main/ggml-model.bin", id)),
+                    url: Some(format!(
+                        "https://hf-mirror.com/{}/resolve/main/ggml-model.bin",
+                        id
+                    )),
                     files: None,
                     sha256: None,
                     size_mb: 0, // Placeholder for unknown size
@@ -912,18 +935,21 @@ impl ModelManager {
                 });
             }
         }
-        
+
         // Save to local market.json
         let market_json_path = self.models_dir.parent().unwrap().join("market.json");
-        fs::write(&market_json_path, serde_json::to_string_pretty(&market_models)?)?;
-        
+        fs::write(
+            &market_json_path,
+            serde_json::to_string_pretty(&market_models)?,
+        )?;
+
         // Merge into available_models
         let mut models = self.available_models.lock().unwrap();
         for mut model in market_models {
             // Check if already downloaded
             let model_path = self.get_model_path(&model.id).unwrap_or_default();
             model.is_downloaded = model_path.exists();
-            
+
             // If the model already exists in our dictionary, we want to update its dynamic properties
             // like downloads, likes, trending score, etc. but preserve things like its local path/filename
             if let Some(existing_model) = models.get_mut(&model.id) {
@@ -941,7 +967,7 @@ impl ModelManager {
                 models.insert(model.id.clone(), model);
             }
         }
-        
+
         Ok(())
     }
 
@@ -1209,7 +1235,7 @@ impl ModelManager {
                     name: display_name,
                     description: "Not officially supported".to_string(),
                     filename,
-                    url: None,    // Custom models have no download URL
+                    url: None, // Custom models have no download URL
                     files: None,
                     sha256: None, // Custom models skip verification
                     size_mb,
@@ -1225,11 +1251,11 @@ impl ModelManager {
                     supported_languages: vec![],
                     supports_language_selection: true,
                     is_custom: true,
-                downloads: None,
-                likes: None,
-                created_at: None,
-                trending_score: None,
-            },
+                    downloads: None,
+                    likes: None,
+                    created_at: None,
+                    trending_score: None,
+                },
             );
         }
 
@@ -1294,15 +1320,15 @@ impl ModelManager {
         files: &[ModelFile],
     ) -> Result<()> {
         let model_dir = self.models_dir.join(&model_info.filename);
-        
+
         // Ensure directory exists
         if !model_dir.exists() {
             fs::create_dir_all(&model_dir)?;
         }
-        
+
         let mut total_downloaded: u64 = 0;
         let total_size: u64 = model_info.size_mb * 1024 * 1024; // Approximation for progress UI
-        
+
         // Mark as downloading
         {
             let mut models = self.available_models.lock().unwrap();
@@ -1325,60 +1351,69 @@ impl ModelManager {
         };
 
         let client = reqwest::Client::new();
-        
+
         for file_info in files {
             let target_path = model_dir.join(&file_info.target_name);
             let partial_path = model_dir.join(format!("{}.partial", &file_info.target_name));
-            
+
             // Skip if file already exists completely
             if target_path.exists() {
                 // Approximate existing size for overall progress
                 total_downloaded += target_path.metadata().map(|m| m.len()).unwrap_or(0);
                 continue;
             }
-            
+
             let mut resume_from = if partial_path.exists() {
                 partial_path.metadata().map(|m| m.len()).unwrap_or(0)
             } else {
                 0
             };
-            
+
             let mut request = client.get(&file_info.url);
             if resume_from > 0 {
                 request = request.header("Range", format!("bytes={}-", resume_from));
             }
-            
+
             let mut response = request.send().await?;
-            
+
             if resume_from > 0 && response.status() == reqwest::StatusCode::OK {
                 let _ = fs::remove_file(&partial_path);
                 resume_from = 0;
                 response = client.get(&file_info.url).send().await?;
             }
-            
-            if !response.status().is_success() && response.status() != reqwest::StatusCode::PARTIAL_CONTENT {
-                return Err(anyhow::anyhow!("Failed to download {}: HTTP {}", file_info.target_name, response.status()));
+
+            if !response.status().is_success()
+                && response.status() != reqwest::StatusCode::PARTIAL_CONTENT
+            {
+                return Err(anyhow::anyhow!(
+                    "Failed to download {}: HTTP {}",
+                    file_info.target_name,
+                    response.status()
+                ));
             }
-            
+
             let mut file = if resume_from > 0 {
-                std::fs::OpenOptions::new().create(true).append(true).open(&partial_path)?
+                std::fs::OpenOptions::new()
+                    .create(true)
+                    .append(true)
+                    .open(&partial_path)?
             } else {
                 std::fs::File::create(&partial_path)?
             };
-            
+
             let mut stream = response.bytes_stream();
             let mut last_emit = Instant::now();
             let throttle_duration = Duration::from_millis(100);
-            
+
             while let Some(chunk) = stream.next().await {
                 if cancel_flag.load(Ordering::Relaxed) {
                     return Ok(());
                 }
-                
+
                 let chunk = chunk?;
                 file.write_all(&chunk)?;
                 total_downloaded += chunk.len() as u64;
-                
+
                 if last_emit.elapsed() >= throttle_duration {
                     // Calculate percentage based on estimated total, but cap at 99.9%
                     // to avoid showing 100% before all files are fully downloaded
@@ -1398,12 +1433,12 @@ impl ModelManager {
                     last_emit = Instant::now();
                 }
             }
-            
+
             file.flush()?;
             drop(file);
             fs::rename(&partial_path, &target_path)?;
         }
-        
+
         cleanup.disarmed = true;
         {
             let mut models = self.available_models.lock().unwrap();
@@ -1422,9 +1457,11 @@ impl ModelManager {
             total: total_downloaded,
             percentage: 100.0,
         };
-        let _ = self.app_handle.emit("model-download-progress", &final_progress);
+        let _ = self
+            .app_handle
+            .emit("model-download-progress", &final_progress);
         let _ = self.app_handle.emit("model-download-complete", model_id);
-        
+
         Ok(())
     }
 
@@ -1439,7 +1476,9 @@ impl ModelManager {
 
         // Support for multi-file models (e.g. SenseVoice from HF)
         if let Some(files) = &model_info.files {
-            return self.download_multi_file_model(model_id, &model_info, files).await;
+            return self
+                .download_multi_file_model(model_id, &model_info, files)
+                .await;
         }
 
         let url = model_info

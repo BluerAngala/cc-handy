@@ -13,16 +13,16 @@ pub async fn fetch_latest_market(
 ) -> Result<Vec<ModelInfo>, String> {
     let sort_val = sort.unwrap_or_else(|| "trendingScore".to_string());
     let limit_val = limit.unwrap_or(50);
-    
+
     let market_url = format!(
         "https://huggingface.co/api/models?pipeline_tag=automatic-speech-recognition&sort={}&direction=-1&limit={}",
         sort_val, limit_val
     );
-    
+
     if let Err(e) = model_manager.update_market_models(&market_url).await {
         log::warn!("Failed to fetch remote market: {}", e);
     }
-    
+
     Ok(model_manager.get_available_models())
 }
 

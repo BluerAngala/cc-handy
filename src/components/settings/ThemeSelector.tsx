@@ -1,6 +1,7 @@
 import React from "react";
 import { useThemeStore, THEMES, type Theme } from "@/stores/themeStore";
 import { Check, Monitor, Moon, Sun, Palette } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ThemeSelectorProps {
   className?: string;
@@ -70,6 +71,7 @@ const ThemePreview: React.FC<{ themeId: Theme }> = ({ themeId }) => {
 export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
   className = "",
 }) => {
+  const { t } = useTranslation();
   const { theme, isSystemTheme, setTheme, setSystemTheme } = useThemeStore();
 
   return (
@@ -79,9 +81,11 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
         <div className="flex items-center gap-3">
           <Monitor className="w-5 h-5 text-text-secondary" />
           <div>
-            <p className="font-medium text-text-primary">跟随系统</p>
+            <p className="font-medium text-text-primary">
+              {t("settings.theme.followSystem.title")}
+            </p>
             <p className="text-sm text-text-tertiary">
-              自动根据系统主题切换明暗模式
+              {t("settings.theme.followSystem.description")}
             </p>
           </div>
         </div>
