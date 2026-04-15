@@ -49,18 +49,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: "macos-latest"
+          - platform: "macos-14"
             target: "aarch64-apple-darwin"
             args: "--target aarch64-apple-darwin"
-          - platform: "macos-latest"
+          - platform: "macos-14"
             target: "x86_64-apple-darwin"
             args: "--target x86_64-apple-darwin"
-          - platform: "ubuntu-22.04"
-            target: "x86_64-unknown-linux-gnu"
-            args: "--bundles deb"
           - platform: "ubuntu-24.04"
             target: "x86_64-unknown-linux-gnu"
-            args: "--bundles appimage,rpm"
+            args: "--bundles appimage"
           - platform: "windows-latest"
             target: "x86_64-pc-windows-msvc"
             args: ""
@@ -81,14 +78,30 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # 即使部分构建失败，也发布已成功的构建
+    if: always() && needs.create-release.result == 'success'
     steps:
       - name: Publish Release
         uses: actions/github-script@v7
         with:
           script: |
-            await github.rest.repos.updateRelease({
+            // 检查是否有任何构建成功上传了资源
+            const { data: release } = await github.rest.repos.getRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              release_id: ${{ needs.create-release.outputs.release_id }},
-              draft: false
+              release_id: ${{ needs.create-release.outputs.release_id }}
             });
+
+            // 如果有资源上传，则发布；否则保持 draft
+            if (release.assets.length > 0) {
+              await github.rest.repos.updateRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: ${{ needs.create-release.outputs.release_id }},
+                draft: false
+              });
+              console.log(`Published release with ${release.assets.length} assets`);
+            } else {
+              console.log('No assets uploaded, keeping as draft');
+              core.setFailed('No assets were successfully built');
+            }
