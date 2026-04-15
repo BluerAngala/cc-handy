@@ -1,7 +1,7 @@
 {
   "name": "cc-handy-app",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.0",
   "author": "BluerAngala",
   "type": "module",
   "scripts": {
